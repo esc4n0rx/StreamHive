@@ -100,10 +100,10 @@ class DashboardPage {
         const provider = card.dataset.provider;
         
         // Se for Netflix, mostrar aviso e não prosseguir
-        if (provider === 'netflix') {
-            toast.show('Netflix ainda não está disponível. Em breve!', 'warning');
-            return;
-        }
+        // if (provider === 'netflix') {
+        //     toast.show('Netflix ainda não está disponível. Em breve!', 'warning');
+        //     return;
+        // }
         
         // Remover seleção anterior
         this.providerCards.forEach(c => c.classList.remove('selected'));
@@ -111,6 +111,27 @@ class DashboardPage {
         // Adicionar seleção atual
         card.classList.add('selected');
         this.selectedProvider = provider;
+
+
+         if (provider === 'netflix') {
+        // Netflix: esconder URL, mostrar aviso informativo
+        this.urlSection.classList.add('hidden');
+        this.netflixNotice.classList.remove('hidden');
+        this.netflixNotice.innerHTML = `
+            <div class="netflix-info-notice">
+                <div class="netflix-info-icon">🎬</div>
+                <h3 class="netflix-info-title">Netflix Integrado</h3>
+                <p class="netflix-info-text">
+                    Sua sala será criada com acesso direto ao Netflix. 
+                    Você poderá fazer login e navegar normalmente, enquanto seus amigos assistem em tempo real.
+                </p>
+            </div>
+        `;
+    } else {
+        // Outros providers: mostrar URL, esconder Netflix notice
+        this.urlSection.classList.remove('hidden');
+        this.netflixNotice.classList.add('hidden');
+    }
         
         // Aguardar animação e mostrar configuração
         setTimeout(() => {
@@ -339,7 +360,7 @@ class DashboardPage {
         const formData = {
             name: document.getElementById('roomName').value.trim(),
             description: document.getElementById('roomDescription').value.trim(),
-            stream_url: document.getElementById('streamUrl').value.trim(),
+            stream_url: this.selectedProvider === 'netflix' ? 'https://www.netflix.com' : document.getElementById('streamUrl').value.trim(),
             max_participants: parseInt(document.getElementById('maxParticipants').value),
             password: document.getElementById('roomPassword').value.trim() || null,
             provider_type: this.selectedProvider // Adicionar provider
@@ -355,7 +376,7 @@ class DashboardPage {
         setButtonLoading(submitBtn, true);
         
         try {
-            const response = await fetch('/create_room', {
+            const response = await fetch('/api/rooms', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

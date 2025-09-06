@@ -413,6 +413,12 @@ def api_create_room():
         name = sanitize_string(data.get('name', '').strip(), 100)
         description = sanitize_string(data.get('description', '').strip(), 500)
         stream_url = data.get('stream_url', '').strip()
+        provider_type = data.get('provider_type', 'external').strip()
+
+        if provider_type == 'netflix':
+            stream_url = 'https://www.netflix.com'
+        else:
+            stream_url = data.get('stream_url', '').strip()
         
         try:
             max_participants = int(data.get('max_participants', 10))
@@ -432,11 +438,12 @@ def api_create_room():
             stream_url=stream_url,
             max_participants=max_participants,
             password=password,
-            owner_id=user_id
+            owner_id=user_id,
+            provider_type=provider_type
         )
         
         if success:
-            logger.info(f"Sala criada: {name} por usuário {user_id}")
+            logger.info(f"Sala {provider_type} criada: {name} por usuário {user_id}")
             
             return jsonify({
                 'success': True,

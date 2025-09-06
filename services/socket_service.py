@@ -3,6 +3,7 @@ Streamhive Socket Service
 Gerenciamento de WebSockets e sincronização de salas
 """
 
+from asyncio.log import logger
 from flask import session, request
 from flask_socketio import SocketIO, emit, join_room, leave_room, disconnect
 from typing import Dict, Any, Optional, List
@@ -12,6 +13,7 @@ import json
 from datetime import datetime
 
 from database.connection import get_db_manager
+from services import room_service
 from services.room_service import get_room_service
 from services.auth_service import get_auth_service
 
@@ -70,6 +72,30 @@ class SocketService:
                 self.logger.error(f"Erro na conexão: {e}")
                 disconnect()
                 return False
+            
+
+        @self.socketio.on('netflix_sync')
+        def handle_netflix_sync(data):
+                """Sincronizar navegação do Netflix entre usuários"""
+                try:
+                    room_id = data.get('room_id')
+                    user_id = session.get('user_id')
+                    
+                    if not room_id or not user_id:
+                        return
+                    
+                    # Verificar se usuário é owner da sala
+                    room = room_service.get_room_by_id(room_id)
+                    if not room or room['owner_id'] != user_id:
+                        return
+                    
+                    # Retransmitir para outros usuários da sala
+                    emit('netflix_sync', data, room=f'room_{room_id}', include_self=False)
+                    
+                    logger.info(f"Netflix sync enviado na sala {room_id} por usuário {user_id}")
+                    
+                except Exception as e:
+                    logger.error(f"Erro no Netflix sync: {e}")
         
         @self.socketio.on('disconnect')
         def handle_disconnect():

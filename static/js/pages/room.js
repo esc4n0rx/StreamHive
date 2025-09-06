@@ -68,6 +68,13 @@ class RoomPage {
             this.joinSocketRoom();
         });
 
+        this.socketClient.on('netflix_sync', (data) => {
+            console.log('🎬 Recebido Netflix sync:', data);
+            if (!this.roomData.isOwner && this.videoPlayer) {
+                this.videoPlayer.syncNetflix(data);
+            }
+        });
+
         // Desconectado
         this.socketClient.on('disconnected', () => {
             this.updateConnectionStatus('Desconectado', false);
@@ -142,11 +149,23 @@ class RoomPage {
             });
         }
 
+        this.videoPlayer.on('netflix_navigation', (data) => {
+            if (this.roomData.isOwner) {
+                console.log('🎬 Netflix navegação - enviando sync:', data);
+                this.socketClient.sendNetflixSync(this.roomData.id, data);
+            }
+        });
+
         // Eventos gerais
         this.videoPlayer.on('loadedmetadata', (data) => {
-            console.log('🎬 Vídeo carregado:', data);
-            this.isVideoLoaded = true;
-        });
+        console.log('🎬 Vídeo carregado:', data);
+        this.isVideoLoaded = true;
+        
+        // Para Netflix, não há sincronização tradicional de tempo
+        if (data.type === 'netflix') {
+            console.log('🎬 Netflix carregado - modo webview ativo');
+        }
+    });
 
         this.videoPlayer.on('error', (data) => {
             console.error('🎬 Erro no vídeo:', data);

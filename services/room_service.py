@@ -24,8 +24,8 @@ class RoomService:
         self.logger = logging.getLogger(__name__)
     
     def create_room(self, name: str, description: str, stream_url: str, 
-               max_participants: int, password: Optional[str], owner_id: int,
-               provider_type: str = 'external') -> Tuple[bool, str, Optional[Dict[str, Any]]]:
+           max_participants: int, password: Optional[str], owner_id: int,
+           provider_type: str = 'external') -> Tuple[bool, str, Optional[Dict[str, Any]]]:
         """
         Cria uma nova sala
         
@@ -43,11 +43,16 @@ class RoomService:
         """
         try:
             # Validações
-
             valid_providers = ['netflix', 'youtube', 'external']
             if provider_type not in valid_providers:
                 return False, "Tipo de provider inválido", None
-            validation_result = self._validate_room_data(name, description, stream_url, max_participants, password)
+                
+            # Para Netflix, definir URL padrão se não fornecida
+            if provider_type == 'netflix' and not stream_url:
+                stream_url = 'https://www.netflix.com'
+                
+            validation_result = self._validate_room_data(name, description, stream_url, 
+                                                    max_participants, password, provider_type)
             if not validation_result[0]:
                 return validation_result
             
@@ -64,13 +69,13 @@ class RoomService:
             # Gerar código único da sala
             room_code = self._generate_room_code()
             
-            # Inserir sala
+            # ✅ CORREÇÃO: Query com ordem correta das colunas e 9 valores
             room_id = self.db.execute_insert(
                 '''
-                INSERT INTO rooms (name, description, stream_url,provider_type, max_participants, password, owner_id, room_code, is_private)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO rooms (name, description, stream_url, provider_type, owner_id, is_private, password, max_participants, room_code)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ''',
-                (name, description, stream_url, max_participants, password, owner_id, room_code, bool(password))
+                (name, description, stream_url, provider_type, owner_id, bool(password), password, max_participants, room_code)
             )
             
             if not room_id:
@@ -95,7 +100,7 @@ class RoomService:
             if not room:
                 return False, "Erro ao recuperar dados da sala", None
             
-            self.logger.info(f"Sala criada: {name} (ID: {room_id}) por usuário {owner_id}")
+            self.logger.info(f"Sala {provider_type} criada: {name} (ID: {room_id}) por usuário {owner_id}")
             
             return True, f"Sala '{name}' criada com sucesso!", room
             
@@ -345,10 +350,16 @@ class RoomService:
             return []
     
     def _validate_room_data(self, name: str, description: str, stream_url: str, 
-                       max_participants: int, password: Optional[str]) -> Tuple[bool, str, None]:
+                   max_participants: int, password: Optional[str], 
+                   provider_type: str = 'external') -> Tuple[bool, str, None]:
         """
         Valida dados da sala
         """
+
+        if provider_type == 'netflix':
+            # Netflix: URL automática, não precisa validar
+            if not stream_url:
+                stream_url = 'https://www.netflix.com'
         # Validar nome
         if not validate_room_name(name):
             return False, "Nome da sala deve ter entre 3 e 100 caracteres", None

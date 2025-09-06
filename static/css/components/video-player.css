@@ -640,3 +640,36 @@
 .video-overlay.hidden {
     pointer-events: none;
 }
+
+
+.netflix-webview-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* Ocultar controles tradicionais quando Netflix ativo */
+.video-player-wrapper.netflix-mode .video-controls {
+    display: none !important;
+}
+
+.video-player-wrapper.netflix-mode .video-element {
+    display: none !important;
+}
+
+.video-player-wrapper.netflix-mode .youtube-container {
+    display: none !important;
+}
+
+/* Overlay específico para Netflix */
+.video-player-wrapper.netflix-mode .video-overlay {
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+}
+
+.video-player-wrapper.netflix-mode.owner-controls .video-overlay {
+    display: none !important;
+}

@@ -202,6 +202,18 @@ class SocketClient {
         return true;
     }
 
+    sendNetflixSync(roomId, data) {
+        if (this.connected && this.socket) {
+            console.log('📡 Enviando Netflix sync:', data);
+            this.socket.emit('netflix_sync', {
+                room_id: roomId,
+                ...data
+            });
+            return true;
+        }
+        return false;
+    }
+
     // Controles de vídeo
     sendVideoAction(roomId, action, data = {}) {
         if (!this.isConnected) {

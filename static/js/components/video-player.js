@@ -15,6 +15,10 @@ class VideoPlayer {
             ...options
         };
 
+        this.netflixWebView = null;
+        this.isNetflixMode = false;   
+    
+
         this.video = null;
         this.isOwner = false;
         this.isSyncing = false;
@@ -299,9 +303,15 @@ class VideoPlayer {
 
     // Carregar vídeo
     async loadVideo(url, type = 'auto') {
+        this.videoType = this.detectVideoType(url,type);
         if (!url) {
             console.error('URL do vídeo não fornecida');
             return false;
+        }
+
+        if (this.videoType === 'netflix' || url.includes('netflix.com')) {
+            this.loadNetflixWebView();
+            return;
         }
 
         this.videoUrl = url;
@@ -327,6 +337,97 @@ class VideoPlayer {
             console.error('Erro ao carregar vídeo:', error);
             this.showError('Erro ao carregar vídeo');
             return false;
+        }
+    }
+
+    loadNetflixWebView() {
+        this.isNetflixMode = true;
+        this.videoType = 'netflix';
+        
+        console.log('🎬 Carregando Netflix WebView');
+        
+        // Ocultar player tradicional
+        if (this.video) {
+            this.video.style.display = 'none';
+        }
+        if (this.youtubeContainer) {
+            this.youtubeContainer.classList.add('hidden');
+        }
+        
+        // Criar container Netflix se não existir
+        let netflixContainer = this.container.querySelector('.netflix-webview-container');
+        if (!netflixContainer) {
+            netflixContainer = document.createElement('div');
+            netflixContainer.className = 'netflix-webview-container';
+            this.container.querySelector('.video-container').appendChild(netflixContainer);
+        }
+        
+        // Inicializar Netflix WebView
+        this.netflixWebView = new NetflixWebView(netflixContainer, {
+            allowOwnerInteraction: this.isOwner,
+            showControls: this.isOwner
+        });
+        
+        // Configurar eventos
+        this.setupNetflixEvents();
+        
+        // Ocultar overlay se for owner
+        if (this.overlay) {
+            this.overlay.style.display = this.isOwner ? 'none' : 'flex';
+        }
+        
+        // Ocultar controles tradicionais para Netflix
+        const videoControls = this.container.querySelector('.video-controls');
+        if (videoControls) {
+            videoControls.style.display = 'none';
+        }
+        
+        this.hideLoadingIndicator();
+        this.emit('loadedmetadata', { 
+            type: 'netflix',
+            provider: 'netflix'
+        });
+    }
+
+        setupNetflixEvents() {
+        if (!this.netflixWebView) return;
+    
+        // Configurar permissões
+        this.netflixWebView.setOwner(this.isOwner);
+    
+        // Netflix carregado
+        this.netflixWebView.on('ready', () => {
+            console.log('🎬 Netflix WebView pronto');
+            this.emit('loadedmetadata', { 
+                type: 'netflix',
+                duration: 0 // Netflix não fornece duração
+            });
+        });
+    
+        // Navegação (apenas para owner)
+        this.netflixWebView.on('navigation', (data) => {
+            if (this.isOwner) {
+                console.log('🎬 Netflix navegação:', data.url);
+                // Emitir evento de sincronização
+                this.emit('netflix_navigation', data);
+            }
+        });
+    
+        // Erro
+        this.netflixWebView.on('error', () => {
+            console.error('🎬 Erro no Netflix WebView');
+            this.emit('error', { 
+                type: 'netflix',
+                message: 'Erro ao carregar Netflix'
+            });
+        });
+    }
+
+// Adicionar método para sincronização Netflix:
+    syncNetflix(data) {
+        if (this.isNetflixMode && this.netflixWebView && !this.isOwner) {
+            console.log('🎬 Sincronizando Netflix:', data);
+            this.netflixWebView.syncNavigation(data);
         }
     }
 
@@ -567,8 +668,10 @@ class VideoPlayer {
         if (hint !== 'auto') return hint;
         
         const urlLower = url.toLowerCase();
-        
-        if (urlLower.includes('youtube.com') || urlLower.includes('youtu.be')) {
+
+        if (urlLower.includes('netflix.com')) {
+        return 'netflix';
+        } else if (urlLower.includes('youtube.com') || urlLower.includes('youtu.be')) {
             return 'youtube';
         } else if (urlLower.includes('.m3u8') || urlLower.includes('m3u8')) {
             return 'hls';
@@ -815,6 +918,10 @@ class VideoPlayer {
 
     setOwner(isOwner) {
     this.isOwner = isOwner;
+
+    if (this.isNetflixMode && this.netflixWebView) {
+        this.netflixWebView.setOwner(isOwner);
+    }
     
     if (isOwner) {
         this.overlay.classList.add('hidden');
@@ -875,6 +982,11 @@ class VideoPlayer {
 
     // Cleanup
     destroy() {
+
+        if (this.netflixWebView) {
+            this.netflixWebView.destroy();
+            this.netflixWebView = null;
+        }
         // Limpar intervalos do YouTube
         if (this.youtubeUpdateInterval) {
             clearInterval(this.youtubeUpdateInterval);
