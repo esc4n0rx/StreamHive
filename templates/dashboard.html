@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
     <!-- CSS Específico do Dashboard -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/components/provider-cards.css') }}">
     
     <!-- Meta tags -->
     <meta name="description" content="Dashboard do usuário {{ user.username }} no Streamhive">
@@ -209,82 +210,159 @@
    </main>
 
    <!-- Modal de Criar Sala -->
-   <div id="createRoomModal" class="modal hidden">
-       <div class="modal-content">
-           <button id="closeCreateRoomModal" class="modal-close" aria-label="Fechar modal">×</button>
-           
-           <div class="modal-header">
-               <h2 class="modal-title gradient-text">Criar Nova Sala</h2>
-               <p class="modal-subtitle">Configure sua sala de streaming</p>
-           </div>
-           
-           <form id="createRoomForm" class="form">
-               <div class="form-group">
-                   <label for="roomName" class="form-label">Nome da Sala *</label>
-                   <input 
-                       type="text" 
-                       id="roomName" 
-                       class="input-field" 
-                       placeholder="Nome da sua sala" 
-                       required 
-                       maxlength="100"
-                   >
-               </div>
-               
-               <div class="form-group">
-                   <label for="roomDescription" class="form-label">Descrição</label>
-                   <textarea 
-                       id="roomDescription" 
-                       class="input-field textarea" 
-                       placeholder="Descreva sua sala (opcional)" 
-                       maxlength="500"
-                       rows="3"
-                   ></textarea>
-               </div>
-               
-               <div class="form-group">
-                   <label for="streamUrl" class="form-label">URL de Transmissão *</label>
-                   <input 
-                       type="url" 
-                       id="streamUrl" 
-                       class="input-field" 
-                       placeholder="https://exemplo.com/video" 
-                       required
-                   >
-               </div>
-               
-               <div class="form-group">
-                   <label for="maxParticipants" class="form-label">Máximo de Participantes *</label>
-                   <input 
-                       type="number" 
-                       id="maxParticipants" 
-                       class="input-field" 
-                       placeholder="10" 
-                       min="2" 
-                       max="50" 
-                       value="10"
-                       required
-                   >
-               </div>
-               
-               <div class="form-group">
-                   <label for="roomPassword" class="form-label">Senha (Opcional)</label>
-                   <input 
-                       type="password" 
-                       id="roomPassword" 
-                       class="input-field" 
-                       placeholder="Deixe vazio para sala pública" 
-                       maxlength="50"
-                   >
-                   <small class="form-help">Se definir senha, a sala será privada</small>
-               </div>
-               
-               <button type="submit" id="createRoomSubmitBtn" class="btn btn-primary btn-lg w-full">
-                   Criar Sala
-               </button>
-           </form>
-       </div>
-   </div>
+   <!-- Modal de Criar Sala -->
+<div id="createRoomModal" class="modal hidden">
+    <div class="modal-content">
+        <button id="closeCreateRoomModal" class="modal-close" aria-label="Fechar modal">×</button>
+        
+        <div class="modal-header">
+            <h2 class="modal-title gradient-text">Criar Nova Sala</h2>
+            <p class="modal-subtitle">Escolha sua plataforma de streaming preferida</p>
+        </div>
+        
+        <form id="createRoomForm" class="form">
+            <!-- Step 1: Seleção de Provider -->
+            <div id="providerSelection" class="form-section">
+                <div class="provider-cards">
+                    <!-- Netflix Card -->
+                    <div class="provider-card" data-provider="netflix">
+                        <span class="provider-badge coming-soon">Em breve</span>
+                        <img src="{{ url_for('static', filename='assets/netflix.png') }}" 
+                             alt="Netflix" 
+                             class="provider-icon">
+                        <h3 class="provider-title">Netflix</h3>
+                        <p class="provider-description">
+                            Assista séries e filmes da Netflix sincronizados com seus amigos
+                        </p>
+                    </div>
+                    
+                    <!-- YouTube Card -->
+                    <div class="provider-card" data-provider="youtube">
+                        <span class="provider-badge available">Disponível</span>
+                        <img src="{{ url_for('static', filename='assets/youtube.png') }}" 
+                             alt="YouTube" 
+                             class="provider-icon">
+                        <h3 class="provider-title">YouTube</h3>
+                        <p class="provider-description">
+                            Compartilhe vídeos do YouTube com controle sincronizado
+                        </p>
+                    </div>
+                    
+                    <!-- Streaming Externo Card -->
+                    <div class="provider-card" data-provider="external">
+                        <span class="provider-badge available">Disponível</span>
+                        <img src="{{ url_for('static', filename='assets/streaming.png') }}" 
+                             alt="Streaming Externo" 
+                             class="provider-icon">
+                        <h3 class="provider-title">Streaming Externo</h3>
+                        <p class="provider-description">
+                            URLs diretas, HLS, DASH e outros formatos de streaming
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Step Indicator -->
+                <div class="step-indicator">
+                    <div class="step active"></div>
+                    <div class="step-separator"></div>
+                    <div class="step"></div>
+                </div>
+            </div>
+            
+            <!-- Step 2: Configuração da Sala -->
+            <div id="roomConfiguration" class="form-section hidden">
+                <!-- Informações Básicas -->
+                <div class="form-group">
+                    <label for="roomName" class="form-label">Nome da Sala *</label>
+                    <input 
+                        type="text" 
+                        id="roomName" 
+                        class="input-field" 
+                        placeholder="Nome da sua sala" 
+                        required 
+                        maxlength="100"
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="roomDescription" class="form-label">Descrição</label>
+                    <textarea 
+                        id="roomDescription" 
+                        class="input-field textarea" 
+                        placeholder="Descreva sua sala (opcional)" 
+                        maxlength="500"
+                        rows="3"
+                    ></textarea>
+                </div>
+                
+                <!-- URL Section (condicional) -->
+                <div id="urlSection" class="form-group">
+                    <label for="streamUrl" class="form-label">URL de Transmissão *</label>
+                    <input 
+                        type="url" 
+                        id="streamUrl" 
+                        class="input-field" 
+                        placeholder="https://exemplo.com/video" 
+                        required
+                    >
+                </div>
+                
+                <!-- Netflix Notice (condicional) -->
+                <div id="netflixNotice" class="not-implemented-notice hidden">
+                    <div class="not-implemented-icon">🚀</div>
+                    <h3 class="not-implemented-title">Netflix em Desenvolvimento</h3>
+                    <p class="not-implemented-text">
+                        A integração com Netflix está sendo desenvolvida e estará disponível em breve. 
+                        Por enquanto, você pode usar YouTube ou outros serviços de streaming.
+                    </p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="maxParticipants" class="form-label">Máximo de Participantes *</label>
+                    <input 
+                        type="number" 
+                        id="maxParticipants" 
+                        class="input-field" 
+                        placeholder="10" 
+                        min="2" 
+                        max="50" 
+                        value="10"
+                        required
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="roomPassword" class="form-label">Senha (Opcional)</label>
+                    <input 
+                        type="password" 
+                        id="roomPassword" 
+                        class="input-field" 
+                        placeholder="Deixe vazio para sala pública" 
+                        maxlength="50"
+                    >
+                    <small class="form-help">Se definir senha, a sala será privada</small>
+                </div>
+                
+                <!-- Step Indicator -->
+                <div class="step-indicator">
+                    <div class="step completed"></div>
+                    <div class="step-separator"></div>
+                    <div class="step active"></div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="form-actions" style="display: flex; gap: 12px; justify-content: space-between; margin-top: 24px;">
+                    <button type="button" id="backToProvider" class="btn btn-secondary">
+                        ← Voltar
+                    </button>
+                    <button type="submit" id="createRoomSubmitBtn" class="btn btn-primary btn-lg" style="flex: 1;">
+                        Criar Sala
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
    <!-- Modal de Entrar em Sala Privada -->
    <div id="joinPrivateRoomModal" class="modal hidden">

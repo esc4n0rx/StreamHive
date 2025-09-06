@@ -55,6 +55,7 @@ class Room:
     name: str = ""
     description: str = ""
     stream_url: str = ""
+    provider_type: str = "external"
     owner_id: int = 0
     is_private: bool = True
     password: Optional[str] = None
@@ -70,6 +71,7 @@ class Room:
             'name': self.name,
             'description': self.description,
             'stream_url': self.stream_url,
+            'provider_type': self.provider_type,
             'owner_id': self.owner_id,
             'is_private': self.is_private,
             'password': self.password,
@@ -113,6 +115,7 @@ class DatabaseSchema:
                 name TEXT NOT NULL,
                 description TEXT,
                 stream_url TEXT NOT NULL,
+                provider_type TEXT DEFAULT 'external',
                 owner_id INTEGER NOT NULL,
                 is_private BOOLEAN DEFAULT 1,
                 password TEXT,

@@ -24,7 +24,8 @@ class RoomService:
         self.logger = logging.getLogger(__name__)
     
     def create_room(self, name: str, description: str, stream_url: str, 
-                   max_participants: int, password: Optional[str], owner_id: int) -> Tuple[bool, str, Optional[Dict[str, Any]]]:
+               max_participants: int, password: Optional[str], owner_id: int,
+               provider_type: str = 'external') -> Tuple[bool, str, Optional[Dict[str, Any]]]:
         """
         Cria uma nova sala
         
@@ -35,12 +36,17 @@ class RoomService:
             max_participants: Número máximo de participantes
             password: Senha da sala (None para sala pública)
             owner_id: ID do proprietário
+            provider_type: Tipo de provider ('netflix', 'youtube', 'external')
             
         Returns:
             Tuple[bool, str, Optional[Dict]]: (sucesso, mensagem, dados_sala)
         """
         try:
             # Validações
+
+            valid_providers = ['netflix', 'youtube', 'external']
+            if provider_type not in valid_providers:
+                return False, "Tipo de provider inválido", None
             validation_result = self._validate_room_data(name, description, stream_url, max_participants, password)
             if not validation_result[0]:
                 return validation_result
@@ -61,7 +67,7 @@ class RoomService:
             # Inserir sala
             room_id = self.db.execute_insert(
                 '''
-                INSERT INTO rooms (name, description, stream_url, max_participants, password, owner_id, room_code, is_private)
+                INSERT INTO rooms (name, description, stream_url,provider_type, max_participants, password, owner_id, room_code, is_private)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 ''',
                 (name, description, stream_url, max_participants, password, owner_id, room_code, bool(password))
