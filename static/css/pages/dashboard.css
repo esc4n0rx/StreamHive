@@ -1,0 +1,683 @@
+/* ========================================
+   STREAMHIVE - CSS ESPECÍFICO DO DASHBOARD
+   Estilos exclusivos para dashboard.html
+======================================== */
+
+/* Header Específico do Dashboard */
+.dashboard-header {
+    background: linear-gradient(135deg, var(--charcoal) 0%, var(--dark-bg) 100%);
+    padding: 120px 0 40px;
+    text-align: center;
+}
+
+.dashboard-welcome {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: bold;
+    margin-bottom: 16px;
+}
+
+.dashboard-subtitle {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.25rem;
+    margin-bottom: 32px;
+}
+
+.dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+.stat-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius-lg);
+    padding: 24px;
+    text-align: center;
+    transition: var(--transition-smooth);
+}
+
+.stat-card:hover {
+    background: var(--glass-hover);
+    transform: translateY(-4px);
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.stat-name {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.875rem;
+}
+
+/* Conteúdo do Dashboard */
+.dashboard-content {
+    padding: 40px 0;
+}
+
+/* Ações Rápidas */
+.quick-actions {
+    margin-bottom: 48px;
+}
+
+.action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+}
+
+/* Seções de Salas */
+.rooms-section {
+    margin-bottom: 48px;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.section-title {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.section-subtitle {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1rem;
+}
+
+/* Grid de Salas */
+.rooms-grid {
+    display: grid;
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+@media (min-width: 640px) {
+    .rooms-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .rooms-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1440px) {
+    .rooms-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Cards de Sala */
+.room-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius-lg);
+    padding: 24px;
+    transition: var(--transition-smooth);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.room-card:hover {
+    background: var(--glass-hover);
+    border-color: rgba(255, 215, 0, 0.3);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.my-room-card {
+    border-color: rgba(255, 215, 0, 0.2);
+}
+
+.my-room-card:hover {
+    border-color: rgba(255, 215, 0, 0.4);
+}
+
+.room-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.room-name {
+    font-size: 1.125rem;
+    font-weight: bold;
+    margin: 0;
+    flex: 1;
+    margin-right: 12px;
+    line-height: 1.3;
+}
+
+.room-participants {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255, 215, 0, 0.1);
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    white-space: nowrap;
+}
+
+.participants-count {
+    font-weight: 600;
+}
+
+.participants-icon {
+    font-size: 0.75rem;
+}
+
+.room-description {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.875rem;
+    line-height: 1.4;
+    margin-bottom: 16px;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.room-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: auto;
+}
+
+.room-owner {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+}
+
+.owner-label {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.owner-name {
+   font-size: 0.875rem;
+   font-weight: 600;
+   color: var(--primary-yellow);
+}
+
+.room-info {
+   display: flex;
+   flex-direction: column;
+   gap: 4px;
+   flex: 1;
+}
+
+.room-badge {
+   font-size: 0.75rem;
+   padding: 2px 8px;
+   border-radius: 8px;
+   font-weight: 500;
+   display: inline-block;
+   width: fit-content;
+}
+
+.room-badge.private {
+   background: rgba(239, 68, 68, 0.2);
+   color: #fca5a5;
+   border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.room-badge.public {
+   background: rgba(34, 197, 94, 0.2);
+   color: #86efac;
+   border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.role-badge {
+   font-size: 0.75rem;
+   padding: 2px 8px;
+   border-radius: 8px;
+   font-weight: 500;
+   display: inline-block;
+   width: fit-content;
+}
+
+.role-badge.owner {
+   background: rgba(255, 215, 0, 0.2);
+   color: var(--primary-yellow);
+   border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.role-badge.participant {
+   background: rgba(59, 130, 246, 0.2);
+   color: #93c5fd;
+   border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+/* Estado Vazio */
+.empty-state {
+   grid-column: 1 / -1;
+   text-align: center;
+   padding: 48px 24px;
+   background: var(--glass-bg);
+   border: 1px solid var(--glass-border);
+   border-radius: var(--border-radius-lg);
+   margin: 24px 0;
+}
+
+.empty-icon {
+   font-size: 4rem;
+   margin-bottom: 16px;
+   opacity: 0.7;
+}
+
+.empty-title {
+   font-size: 1.5rem;
+   font-weight: bold;
+   margin-bottom: 8px;
+}
+
+.empty-description {
+   color: rgba(255, 255, 255, 0.7);
+   margin-bottom: 24px;
+   max-width: 400px;
+   margin-left: auto;
+   margin-right: auto;
+}
+
+/* Botão Carregar Mais */
+.load-more-container {
+   text-align: center;
+   margin-top: 32px;
+}
+
+/* Header Fixo */
+.fixed-header {
+   position: fixed;
+   top: 0;
+   left: 0;
+   right: 0;
+   z-index: var(--z-header);
+   backdrop-filter: blur(20px);
+   background: rgba(44, 44, 44, 0.9);
+   border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+   padding: 16px 0;
+}
+
+.header-nav {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+}
+
+.header-logo {
+   display: flex;
+   align-items: center;
+   gap: 12px;
+}
+
+.logo-icon {
+   width: 40px;
+   height: 40px;
+   background: linear-gradient(135deg, var(--primary-yellow) 0%, var(--primary-orange) 100%);
+   border-radius: var(--border-radius-md);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   font-weight: bold;
+   font-size: 1.125rem;
+   color: var(--charcoal);
+}
+
+.logo-text {
+   font-size: 1.5rem;
+   font-weight: bold;
+}
+
+.header-user {
+   display: flex;
+   align-items: center;
+   gap: 16px;
+}
+
+.user-greeting {
+   color: rgba(255, 255, 255, 0.8);
+   font-size: 0.875rem;
+}
+
+/* Informações do Usuário */
+.user-info {
+   background: var(--glass-bg);
+   border: 1px solid var(--glass-border);
+   border-radius: var(--border-radius-lg);
+   padding: 32px;
+   margin-bottom: 32px;
+   text-align: center;
+}
+
+.user-avatar {
+   width: 80px;
+   height: 80px;
+   background: linear-gradient(135deg, var(--primary-yellow) 0%, var(--primary-orange) 100%);
+   border-radius: 50%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   margin: 0 auto 24px;
+   font-size: 2rem;
+   font-weight: bold;
+   color: var(--charcoal);
+}
+
+.user-details {
+   text-align: center;
+}
+
+.user-name {
+   font-size: 1.5rem;
+   font-weight: bold;
+   margin-bottom: 8px;
+}
+
+.user-meta {
+   color: rgba(255, 255, 255, 0.7);
+   font-size: 0.875rem;
+}
+
+/* Modais Específicos */
+.modal-header {
+   text-align: center;
+   margin-bottom: 32px;
+}
+
+.modal-title {
+   font-size: 2rem;
+   font-weight: bold;
+   margin-bottom: 8px;
+}
+
+.modal-subtitle {
+   color: rgba(255, 255, 255, 0.7);
+   font-size: 1.125rem;
+}
+
+.form {
+   display: flex;
+   flex-direction: column;
+   gap: 24px;
+}
+
+.form-group {
+   display: flex;
+   flex-direction: column;
+   gap: 8px;
+}
+
+.form-label {
+   font-size: 0.875rem;
+   font-weight: 500;
+   color: rgba(255, 255, 255, 0.8);
+}
+
+.form-help {
+   font-size: 0.75rem;
+   color: rgba(255, 255, 255, 0.6);
+   margin-top: 4px;
+}
+
+.textarea {
+   resize: vertical;
+   min-height: 80px;
+   font-family: inherit;
+}
+
+.w-full {
+   width: 100%;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+   .dashboard-header {
+       padding: 100px 0 30px;
+   }
+   
+   .dashboard-stats {
+       grid-template-columns: 1fr;
+       gap: 16px;
+   }
+   
+   .dashboard-content {
+       padding: 30px 0;
+   }
+   
+   .action-buttons {
+       flex-direction: column;
+       align-items: stretch;
+   }
+   
+   .rooms-grid {
+       grid-template-columns: 1fr;
+       gap: 16px;
+   }
+   
+   .room-card {
+       padding: 20px;
+   }
+   
+   .room-header {
+       flex-direction: column;
+       align-items: flex-start;
+       gap: 8px;
+   }
+   
+   .room-participants {
+       align-self: flex-end;
+   }
+   
+   .room-footer {
+       flex-direction: column;
+       align-items: flex-start;
+       gap: 12px;
+   }
+   
+   .room-footer .btn {
+       width: 100%;
+   }
+   
+   .user-greeting {
+       display: none;
+   }
+   
+   .modal-content {
+       margin: 16px;
+       padding: 24px;
+   }
+   
+   .modal-title {
+       font-size: 1.5rem;
+   }
+   
+   .form {
+       gap: 20px;
+   }
+}
+
+@media (max-width: 480px) {
+   .dashboard-welcome {
+       font-size: 1.75rem;
+   }
+   
+   .dashboard-subtitle {
+       font-size: 1rem;
+   }
+   
+   .section-title {
+       font-size: 1.25rem;
+   }
+   
+   .section-subtitle {
+       font-size: 0.875rem;
+   }
+   
+   .room-name {
+       font-size: 1rem;
+   }
+   
+   .room-description {
+       font-size: 0.8rem;
+   }
+   
+   .logo-text {
+       font-size: 1.25rem;
+   }
+   
+   .logo-icon {
+       width: 36px;
+       height: 36px;
+       font-size: 1rem;
+   }
+   
+   .user-avatar {
+       width: 60px;
+       height: 60px;
+       font-size: 1.5rem;
+   }
+   
+   .user-name {
+       font-size: 1.25rem;
+   }
+   
+   .empty-icon {
+       font-size: 3rem;
+   }
+   
+   .empty-title {
+       font-size: 1.25rem;
+   }
+   
+   .modal-content {
+       padding: 20px;
+   }
+}
+
+/* Animações específicas */
+.room-card {
+   opacity: 0;
+   transform: translateY(20px);
+   transition: var(--transition-smooth);
+}
+
+.room-card.animated {
+   opacity: 1;
+   transform: translateY(0);
+}
+
+/* Estados de hover para dispositivos touch */
+@media (hover: none) and (pointer: coarse) {
+   .room-card:hover {
+       transform: none;
+       background: var(--glass-bg);
+       border-color: var(--glass-border);
+       box-shadow: none;
+   }
+   
+   .stat-card:hover {
+       transform: none;
+   }
+}
+
+/* Melhorias para telas grandes */
+@media (min-width: 1200px) {
+   .container {
+       max-width: 1200px;
+   }
+   
+   .rooms-grid {
+       gap: 32px;
+   }
+   
+   .room-card {
+       padding: 28px;
+   }
+}
+
+@media (min-width: 1440px) {
+   .dashboard-welcome {
+       font-size: 3.5rem;
+   }
+   
+   .dashboard-subtitle {
+       font-size: 1.5rem;
+   }
+}
+
+/* Acessibilidade melhorada */
+@media (prefers-reduced-motion: reduce) {
+   .room-card {
+       transition: none;
+   }
+   
+   .stat-card {
+       transition: none;
+   }
+   
+   .room-card:hover {
+       transform: none;
+   }
+   
+   .stat-card:hover {
+       transform: none;
+   }
+}
+
+/* Focus states melhorados */
+.room-card:focus-within {
+   outline: 2px solid var(--primary-yellow);
+   outline-offset: 2px;
+}
+
+.join-room-btn:focus {
+   outline: 2px solid var(--primary-yellow);
+   outline-offset: 2px;
+}
+
+/* Estados de loading para botões */
+.btn.loading::after {
+   content: '';
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   width: 18px;
+   height: 18px;
+   margin: -9px 0 0 -9px;
+   border: 2px solid transparent;
+   border-top: 2px solid currentColor;
+   border-radius: 50%;
+   animation: spin 1s linear infinite;
+}
+
+/* Melhorias de performance */
+.rooms-grid {
+   contain: layout;
+}
+
+.room-card {
+   contain: layout style;
+}
+
+/* Dark mode específico (futuro) */
+@media (prefers-color-scheme: light) {
+   /* Reservado para modo claro futuro */
+}

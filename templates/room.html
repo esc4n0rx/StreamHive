@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ room.name }} | Streamhive</title>
+    
+    <!-- CSS Base Global -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    
+    <!-- CSS dos Componentes -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/components/video-player.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/components/chat.css') }}">
+    
+    <!-- Socket.IO -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    
+    <!-- CSS Específico da Sala -->
+    <style>
+        .room-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-top: 80px;
+            background: linear-gradient(135deg, var(--charcoal) 0%, var(--dark-bg) 100%);
+        }
+        
+        .room-header {
+            background: linear-gradient(135deg, var(--charcoal) 0%, var(--dark-bg) 100%);
+            padding: 40px 0;
+            text-align: center;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        
+        .room-title {
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+        
+        .room-meta {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.875rem;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .room-content {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 24px;
+            padding: 40px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .video-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .chat-section {
+            height: 600px;
+            position: sticky;
+            top: 120px;
+        }
+        
+        .participants-panel {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius-lg);
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .participants-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        
+        .participants-title {
+            font-weight: bold;
+            font-size: 1.125rem;
+        }
+        
+        .participants-count {
+            background: var(--primary-yellow);
+            color: var(--charcoal);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        
+        .participants-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .participant-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px;
+            border-radius: var(--border-radius-sm);
+            transition: var(--transition-fast);
+        }
+        
+        .participant-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .participant-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-yellow) 0%, var(--primary-orange) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.875rem;
+            color: var(--charcoal);
+        }
+        
+        .participant-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .participant-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: white;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .participant-role {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .participant-actions {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .participant-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 4px 6px;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            font-size: 0.75rem;
+        }
+        
+        .participant-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .participant-btn.danger:hover {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+        
+        .room-controls {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius-lg);
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .controls-header {
+            font-weight: bold;
+            font-size: 1.125rem;
+            margin-bottom: 16px;
+            color: var(--primary-yellow);
+        }
+        
+        .control-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .control-button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: var(--border-radius-md);
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            font-size: 0.875rem;
+            text-align: left;
+        }
+        
+        .control-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .control-button.danger:hover {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+        
+        .control-icon {
+            font-size: 1rem;
+        }
+        
+        .fixed-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: var(--z-header);
+            backdrop-filter: blur(20px);
+            background: rgba(44, 44, 44, 0.95);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+            padding: 16px 0;
+        }
+        
+        .header-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary-yellow) 0%, var(--primary-orange) 100%);
+            border-radius: var(--border-radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1rem;
+            color: var(--charcoal);
+        }
+        
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .room-code-display {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius-md);
+            padding: 8px 16px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 0.875rem;
+            color: var(--primary-yellow);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .room-code-display:hover {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: rgba(255, 215, 0, 0.3);
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: var(--border-radius-md);
+            padding: 6px 12px;
+            font-size: 0.75rem;
+            color: #22c55e;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* Responsividade */
+        @media (max-width: 1024px) {
+            .room-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 30px 16px;
+            }
+            
+            .chat-section {
+                height: 400px;
+                position: static;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .room-header {
+                padding: 30px 0;
+            }
+            
+            .room-meta {
+                gap: 16px;
+                flex-direction: column;
+            }
+            
+            .room-content {
+                padding: 20px 12px;
+                gap: 16px;
+            }
+            
+            .chat-section {
+                height: 350px;
+            }
+            
+            .header-actions {
+                gap: 8px;
+            }
+            
+            .room-code-display {
+                font-size: 0.75rem;
+                padding: 6px 12px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .logo-text {
+                display: none;
+            }
+            
+            .room-meta {
+                gap: 8px;
+            }
+            
+            .meta-item {
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+    
+    <!-- Meta tags -->
+    <meta name="description" content="Sala {{ room.name }} no Streamhive">
+    <meta name="robots" content="noindex, nofollow">
+</head>
+<body class="text-white">
+    <!-- Header Fixo -->
+    <header class="fixed-header">
+        <nav class="container mx-auto px-4 sm:px-6">
+            <div class="header-nav">
+                <div class="header-logo">
+                    <div class="logo-icon">S</div>
+                    <h1 class="logo-text gradient-text">Streamhive</h1>
+                </div>
+                
+                <div class="header-actions">
+                    <div class="status-indicator" id="connectionStatus">
+                        <div class="status-dot"></div>
+                        <span>Conectando...</span>
+                    </div>
+                    
+                    {% if room.is_private %}
+                    <div class="room-code-display" title="Clique para copiar o código" id="roomCodeDisplay">
+                        {{ room.room_code }}
+                    </div>
+                    {% endif %}
+                    
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-ghost btn-sm">
+                        ← Dashboard
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="room-container">
+        <!-- Header da Sala -->
+        <section class="room-header">
+            <div class="container mx-auto px-4 sm:px-6">
+                <h1 class="room-title">
+                    {{ room.name }}
+                </h1>
+                
+                <div class="room-meta">
+                    <div class="meta-item">
+                        <span>👥</span>
+                        <span id="participantsCount">{{ room.current_participants }}/{{ room.max_participants }} participantes</span>
+                    </div>
+                    
+                    <div class="meta-item">
+                        <span>👑</span>
+                        <span>{{ room.owner_username }}</span>
+                    </div>
+                    
+                    {% if room.is_private %}
+                    <div class="meta-item">
+                        <span>🔒</span>
+                        <span>Sala Privada</span>
+                    </div>
+                    {% else %}
+                    <div class="meta-item">
+                        <span>🌟</span>
+                        <span>Sala Pública</span>
+                    </div>
+                    {% endif %}
+                    
+                    {% if user_role %}
+                    <div class="meta-item">
+                        <span>
+                            {% if user_role == 'owner' %}👑
+                            {% elif user_role == 'moderator' %}🛡️
+                            {% else %}👤{% endif %}
+                        </span>
+                        <span>
+                            {% if user_role == 'owner' %}Proprietário
+                            {% elif user_role == 'moderator' %}Moderador
+                            {% else %}Participante{% endif %}
+                        </span>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                {% if room.description %}
+                <p class="room-description" style="margin-top: 16px; color: rgba(255, 255, 255, 0.8); max-width: 600px; margin-left: auto; margin-right: auto;">
+                    {{ room.description }}
+                </p>
+                {% endif %}
+            </div>
+        </section>
+        
+        <!-- Conteúdo da Sala -->
+        <section class="room-content">
+            <!-- Seção do Vídeo -->
+            <div class="video-section">
+                <!-- Player de Vídeo -->
+                <div id="videoPlayerContainer"></div>
+                
+                <!-- Participantes (Mobile) -->
+                <div class="participants-panel" id="participantsPanelMobile" style="display: none;">
+                    <div class="participants-header">
+                        <div class="participants-title">👥 Participantes</div>
+                        <div class="participants-count" id="participantsCountBadge">0</div>
+                    </div>
+                    <div class="participants-list" id="participantsList"></div>
+                </div>
+                
+                <!-- Controles da Sala (Owner) -->
+                {% if is_owner %}
+                <div class="room-controls">
+                    <div class="controls-header">⚙️ Controles da Sala</div>
+                    <div class="control-buttons">
+                        <button class="control-button" id="shareRoomBtn">
+                            <span class="control-icon">📤</span>
+                            <span>Compartilhar Sala</span>
+                        </button>
+                        <button class="control-button" id="manageUsersBtn">
+                            <span class="control-icon">👥</span>
+                            <span>Gerenciar Usuários</span>
+                        </button>
+                        <button class="control-button danger" id="deleteRoomBtn">
+                            <span class="control-icon">🗑️</span>
+                            <span>Encerrar Sala</span>
+                        </button>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            
+            <!-- Seção do Chat e Participantes -->
+            <div class="chat-section">
+                <div style="display: flex; flex-direction: column; height: 100%; gap: 16px;">
+                    <!-- Chat -->
+                    <div id="chatContainer" style="flex: 1; min-height: 0;"></div>
+                    
+                    <!-- Participantes (Desktop) -->
+                    <div class="participants-panel" id="participantsPanelDesktop">
+                        <div class="participants-header">
+                            <div class="participants-title">👥 Participantes</div>
+                            <div class="participants-count" id="participantsCountBadgeDesktop">0</div>
+                        </div>
+                        <div class="participants-list" id="participantsListDesktop"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Toast Notifications -->
+    <div id="toast" class="toast-container">
+        <div id="toastContent" class="toast">
+            <div id="toastMessage"></div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Dados da sala disponíveis globalmente
+        window.roomData = {
+            id: {{ room.id }},
+            name: "{{ room.name }}",
+            streamUrl: "{{ room.stream_url }}",
+            isPrivate: {{ 'true' if room.is_private else 'false' }},
+            isOwner: {{ 'true' if is_owner else 'false' }},
+            userRole: "{{ user_role }}",
+            userId: "{{ user_id }}",
+            roomCode: "{{ room.room_code }}",
+            ownerId: {{ room.owner_id }},
+            maxParticipants: {{ room.max_participants }}
+        };
+        
+        // Dados do usuário
+        window.currentUser = {
+            id: "{{ user_id }}",
+            username: "{{ session.username }}"
+        };
+    </script>
+
+    <script src="{{ url_for('static', filename='js/core/base.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/utils/helpers.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/utils/socket-client.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/components/video-player.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/components/chat.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/pages/room.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,642 @@
+/* ========================================
+   STREAMHIVE - VIDEO PLAYER STYLES
+   Componente de player de vídeo customizado
+======================================== */
+
+.video-player-wrapper {
+    position: relative;
+    width: 100%;
+    background: #000;
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+}
+
+.video-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+}
+
+.video-element {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    object-fit: contain;
+}
+
+/* Overlay para participantes */
+.video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    cursor: not-allowed;
+    transition: var(--transition-smooth);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.video-overlay:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.overlay-message {
+    text-align: center;
+    color: white;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 24px 32px;
+    border-radius: var(--border-radius-lg);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    transform: scale(0.9);
+    transition: var(--transition-smooth);
+}
+
+.video-overlay:hover .overlay-message {
+    transform: scale(1);
+}
+
+.overlay-icon {
+    font-size: 3rem;
+    margin-bottom: 12px;
+}
+
+.overlay-text {
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+/* Controles do vídeo */
+.video-controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    padding: 40px 16px 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    opacity: 0;
+    transform: translateY(100%);
+    transition: var(--transition-smooth);
+    z-index: 5;
+}
+
+.video-container:hover .video-controls,
+.video-container:focus-within .video-controls,
+.video-controls:hover {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.owner-controls .video-controls {
+    cursor: pointer;
+}
+
+.controls-left,
+.controls-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.controls-center {
+    flex: 1;
+    margin: 0 16px;
+}
+
+/* Botões de controle */
+.control-btn {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.25rem;
+    padding: 8px;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    transition: var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    min-height: 40px;
+}
+
+.control-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+.control-btn:active {
+    transform: scale(0.95);
+}
+
+.control-btn .hidden {
+    display: none;
+}
+
+/* Controle de volume */
+.volume-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.volume-slider {
+    width: 80px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+}
+
+.volume-slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: var(--primary-yellow);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.volume-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+.volume-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: var(--primary-yellow);
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+}
+
+/* Display de tempo */
+.time-display {
+    font-family: 'Courier New', monospace;
+    font-size: 0.875rem;
+    color: white;
+    white-space: nowrap;
+}
+
+.time-separator {
+    margin: 0 4px;
+    opacity: 0.7;
+}
+
+/* Barra de progresso */
+.progress-container {
+    position: relative;
+    width: 100%;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.progress-slider {
+    position: absolute;
+    width: 100%;
+    height: 4px;
+    background: transparent;
+    outline: none;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.progress-slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: var(--primary-yellow);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    opacity: 0;
+}
+
+.progress-container:hover .progress-slider::-webkit-slider-thumb {
+    opacity: 1;
+}
+
+.progress-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: var(--primary-yellow);
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    opacity: 0;
+}
+
+.progress-container:hover .progress-slider::-moz-range-thumb {
+    opacity: 1;
+}
+
+.progress-track {
+    position: absolute;
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.progress-filled {
+    height: 100%;
+    background: var(--primary-yellow);
+    width: 0%;
+    transition: width 0.1s ease;
+}
+
+.progress-buffered {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.5);
+    width: 0%;
+    transition: width 0.2s ease;
+}
+
+/* Seletor de velocidade */
+.rate-select {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    border-radius: var(--border-radius-sm);
+    padding: 4px 8px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    outline: none;
+}
+
+.rate-select:focus {
+    border-color: var(--primary-yellow);
+}
+
+.rate-select option {
+    background: var(--charcoal);
+    color: white;
+}
+
+/* Informações do vídeo */
+.video-info {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius-md);
+    padding: 16px;
+    margin-top: 16px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.info-label {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+}
+
+.info-value {
+    font-size: 0.875rem;
+    color: white;
+    font-weight: 600;
+}
+
+/* Estados especiais */
+.video-player-wrapper.loading .video-element {
+    background: linear-gradient(45deg, #1a1a1a 25%, #2a2a2a 25%, #2a2a2a 50%, #1a1a1a 50%, #1a1a1a 75%, #2a2a2a 75%);
+    background-size: 40px 40px;
+    animation: loading-stripes 1s linear infinite;
+}
+
+@keyframes loading-stripes {
+    0% { background-position: 0 0; }
+    100% { background-position: 40px 40px; }
+}
+
+/* Modo fullscreen */
+.video-player-wrapper:-webkit-full-screen {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+}
+
+.video-player-wrapper:-moz-full-screen {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+}
+
+.video-player-wrapper:fullscreen {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+}
+
+.video-player-wrapper:fullscreen .video-container {
+    padding-bottom: 0;
+    height: 100vh;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .video-controls {
+        padding: 30px 12px 12px;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+    
+    .controls-center {
+        order: -1;
+        width: 100%;
+        margin: 0 0 8px 0;
+    }
+    
+    .controls-left,
+    .controls-right {
+        gap: 8px;
+    }
+    
+    .control-btn {
+        font-size: 1rem;
+        min-width: 36px;
+        min-height: 36px;
+        padding: 6px;
+    }
+    
+    .volume-slider {
+        width: 60px;
+    }
+    
+    .time-display {
+        font-size: 0.75rem;
+    }
+    
+    .video-info {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .video-controls {
+        padding: 25px 8px 8px;
+        gap: 8px;
+    }
+    
+    .control-btn {
+        font-size: 0.875rem;
+        min-width: 32px;
+        min-height: 32px;
+        padding: 4px;
+    }
+    
+    .volume-control {
+        display: none; /* Ocultar controle de volume em mobile */
+    }
+    
+    .rate-select {
+        font-size: 0.75rem;
+        padding: 2px 4px;
+    }
+    
+    .overlay-message {
+        padding: 16px 20px;
+    }
+    
+    .overlay-icon {
+        font-size: 2rem;
+        margin-bottom: 8px;
+    }
+    
+    .overlay-text {
+        font-size: 1rem;
+    }
+}
+
+/* Animações e transições */
+.video-player-wrapper {
+    animation: fadeInScale 0.5s ease-out;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Estados hover para desktop */
+@media (hover: hover) and (pointer: fine) {
+    .video-container:hover .progress-track {
+        height: 6px;
+    }
+    
+    .video-container:hover .progress-slider {
+        height: 6px;
+    }
+}
+
+/* Performance optimizations */
+.video-element {
+    will-change: transform;
+}
+
+.video-controls {
+    will-change: opacity, transform;
+}
+
+.progress-filled {
+    will-change: width;
+}
+
+/* Accessibility */
+.control-btn:focus {
+    outline: 2px solid var(--primary-yellow);
+    outline-offset: 2px;
+}
+
+.progress-slider:focus {
+    outline: 2px solid var(--primary-yellow);
+    outline-offset: 2px;
+}
+
+.volume-slider:focus {
+    outline: 2px solid var(--primary-yellow);
+    outline-offset: 2px;
+}
+
+/* Estados de erro */
+.video-player-wrapper.error .video-element {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2a1a1a 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.video-player-wrapper.error .video-element::after {
+    content: "❌ Erro ao carregar vídeo";
+    color: white;
+    font-size: 1.25rem;
+    text-align: center;
+}
+
+/* Adicionar ao final do arquivo existente */
+
+/* Container do YouTube */
+.youtube-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+}
+
+.youtube-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* Indicador de carregamento */
+.loading-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 15;
+    backdrop-filter: blur(10px);
+}
+
+.loading-spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid rgba(255, 215, 0, 0.3);
+    border-top: 4px solid var(--primary-yellow);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 16px;
+}
+
+.loading-text {
+    color: white;
+    font-size: 1.125rem;
+    font-weight: 500;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Estados de erro aprimorados */
+.video-player-wrapper.error .video-element {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2a1a1a 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.25rem;
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.video-player-wrapper.error .video-element::before {
+    content: "❌ ";
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 16px;
+}
+
+.video-player-wrapper.error .video-element::after {
+    content: "Erro ao carregar vídeo\AVerifique se a URL está correta ou tente outro formato";
+    white-space: pre-line;
+    line-height: 1.5;
+}
+
+/* Otimizações para YouTube */
+.video-player-wrapper .youtube-container {
+    pointer-events: auto;
+}
+
+.video-player-wrapper:not(.owner-controls) .youtube-container {
+    pointer-events: none;
+}
+.video-player-wrapper:not(.owner-controls):hover .video-overlay {
+    opacity: 1;
+}
+.video-player-wrapper:not(.owner-controls) .video-container:hover .video-overlay {
+    opacity: 1;
+}
+.video-player-wrapper.owner-controls .video-overlay {
+    display: none !important;
+}
+/* Melhorias para mobile com YouTube */
+@media (max-width: 768px) {
+    .youtube-container {
+        border-radius: 0;
+    }
+    
+    .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border-width: 3px;
+    }
+    
+    .loading-text {
+        font-size: 1rem;
+    }
+}
+
+/* Responsividade para container do YouTube */
+.youtube-container iframe {
+    object-fit: contain;
+}
+
+/* Estados hover para YouTube */
+.video-player-wrapper:hover .video-controls {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Prevenção de clique em participantes no YouTube */
+.video-overlay {
+    pointer-events: auto;
+}
+
+.video-overlay.hidden {
+    pointer-events: none;
+}

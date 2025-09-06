@@ -1,0 +1,111 @@
+/* Estilos adicionais para melhor performance e organização */
+
+/* Preload de fontes críticas */
+@font-face {
+    font-family: 'System';
+    src: local(-apple-system), local(BlinkMacSystemFont);
+    font-display: swap;
+}
+
+/* Otimizações de performance */
+* {
+    box-sizing: border-box;
+}
+
+img, video {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Estados de focus melhorados */
+button:focus-visible,
+input:focus-visible {
+    outline: 2px solid var(--primary-yellow);
+    outline-offset: 2px;
+}
+
+/* Animações reduzidas para usuários que preferem */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    
+    .pulse-animation {
+        animation: none;
+    }
+}
+
+/* Dark mode automático baseado na preferência do usuário */
+@media (prefers-color-scheme: light) {
+    /* Se o usuário preferir light mode, podemos ajustar no futuro */
+}
+
+/* Print styles */
+@media print {
+    .fixed-header,
+    .modal,
+    .toast-container {
+        display: none !important;
+    }
+    
+    body {
+        background: white !important;
+        color: black !important;
+    }
+}
+
+/* Melhorias para telas grandes */
+@media (min-width: 1440px) {
+    .container {
+        max-width: 1400px;
+    }
+    
+    .hero-title {
+        font-size: 5rem;
+    }
+}
+
+/* Melhorias para telas ultra-wide */
+@media (min-width: 1920px) {
+    .hero-section {
+        min-height: 80vh;
+    }
+}
+
+/* Estados de loading globais */
+.global-loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+/* Micro-interações */
+.micro-bounce {
+    animation: micro-bounce 0.3s ease-out;
+}
+
+@keyframes micro-bounce {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+
+/* Skeleton loading para futuras implementações */
+.skeleton {
+    background: linear-gradient(90deg, 
+        rgba(255, 255, 255, 0.1) 25%, 
+        rgba(255, 255, 255, 0.2) 50%, 
+        rgba(255, 255, 255, 0.1) 75%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+}
+
+@keyframes skeleton-loading {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}

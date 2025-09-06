@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Página não encontrada | Streamhive</title>
+    
+    <!-- CSS Base Global -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    
+    <style>
+        .error-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .error-content {
+            max-width: 500px;
+        }
+        
+        .error-code {
+            font-size: clamp(4rem, 15vw, 8rem);
+            font-weight: bold;
+            margin-bottom: 16px;
+        }
+        
+        .error-title {
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            font-weight: bold;
+            margin-bottom: 16px;
+        }
+        
+        .error-description {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+        
+        .error-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: center;
+        }
+        
+        @media (min-width: 640px) {
+            .error-actions {
+                flex-direction: row;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body class="text-white">
+    <div class="error-page">
+        <div class="error-content">
+            <h1 class="error-code gradient-text">404</h1>
+            <h2 class="error-title">Página não encontrada</h2>
+            <p class="error-description">
+                Ops! A página que você está procurando não existe ou foi movida para outro local.
+            </p>
+            <div class="error-actions">
+                <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg">
+                    🏠 Voltar ao Início
+                </a>
+                <button onclick="history.back()" class="btn btn-secondary btn-lg">
+                    ← Página Anterior
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

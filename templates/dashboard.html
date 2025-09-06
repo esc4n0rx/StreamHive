@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - {{ user.username }} | Streamhive</title>
+    
+    <!-- CSS Base Global -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <!-- CSS Específico do Dashboard -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/dashboard.css') }}">
+    
+    <!-- Meta tags -->
+    <meta name="description" content="Dashboard do usuário {{ user.username }} no Streamhive">
+    <meta name="robots" content="noindex, nofollow">
+</head>
+<body class="text-white">
+    <!-- Header Fixo -->
+    <header class="fixed-header">
+        <nav class="container mx-auto px-4 sm:px-6">
+            <div class="header-nav">
+                <div class="header-logo">
+                    <div class="logo-icon">S</div>
+                    <h1 class="logo-text gradient-text">Streamhive</h1>
+                </div>
+                
+                <div class="header-user">
+                    <span class="user-greeting">Olá, {{ user.username }}!</span>
+                    <a href="{{ url_for('logout') }}" class="btn btn-ghost btn-sm">
+                        Sair
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main>
+        <!-- Header do Dashboard -->
+        <section class="dashboard-header">
+            <div class="container mx-auto px-4 sm:px-6">
+                <h1 class="dashboard-welcome">
+                    Bem-vindo, <span class="gradient-text">{{ user.username }}</span>!
+                </h1>
+                <p class="dashboard-subtitle">
+                    Seu centro de comando para streaming social
+                </p>
+                
+                <!-- Estatísticas Rápidas -->
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <div class="stat-value gradient-text">{{ stats.total_users or 0 }}</div>
+                        <div class="stat-name">Usuários Totais</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value gradient-text">{{ stats.active_users or 0 }}</div>
+                        <div class="stat-name">Usuários Ativos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value gradient-text">{{ stats.users_today or 0 }}</div>
+                        <div class="stat-name">Novos Hoje</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Conteúdo do Dashboard -->
+        <section class="dashboard-content">
+            <div class="container mx-auto px-4 sm:px-6">
+                <!-- Seção de Ações Rápidas -->
+                <div class="quick-actions">
+                    <div class="action-buttons">
+                        <button id="createRoomBtn" class="btn btn-primary btn-lg">
+                            🎬 Criar Nova Sala
+                        </button>
+                        <button id="joinPrivateRoomBtn" class="btn btn-secondary btn-lg">
+                            🔒 Entrar em Sala Privada
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Seção de Salas Públicas -->
+                <div class="rooms-section">
+                    <div class="section-header">
+                        <h2 class="section-title">🌟 Salas Públicas</h2>
+                        <p class="section-subtitle">Descubra salas abertas para todos participarem</p>
+                    </div>
+                    
+                    <div id="publicRoomsGrid" class="rooms-grid">
+                        {% if public_rooms %}
+                            {% for room in public_rooms %}
+                            <div class="room-card" data-room-id="{{ room.id }}">
+                               <div class="room-header">
+                                   <h3 class="room-name">{{ room.name }}</h3>
+                                   <div class="room-participants">
+                                       <span class="participants-count">{{ room.current_participants }}/{{ room.max_participants }}</span>
+                                       <span class="participants-icon">👥</span>
+                                   </div>
+                               </div>
+                               
+                               <div class="room-description">
+                                   {{ room.description or 'Sem descrição disponível' }}
+                               </div>
+                               
+                               <div class="room-footer">
+                                   <div class="room-owner">
+                                       <span class="owner-label">Por:</span>
+                                       <span class="owner-name">{{ room.owner_username }}</span>
+                                   </div>
+                                   
+                                   <button class="btn btn-primary btn-sm join-room-btn" 
+                                           data-room-id="{{ room.id }}"
+                                           {% if room.current_participants >= room.max_participants %}disabled{% endif %}>
+                                       {% if room.current_participants >= room.max_participants %}
+                                           Lotada
+                                       {% else %}
+                                           Entrar
+                                       {% endif %}
+                                   </button>
+                               </div>
+                           </div>
+                           {% endfor %}
+                       {% else %}
+                           <div class="empty-state">
+                               <div class="empty-icon">🎬</div>
+                               <h3 class="empty-title">Nenhuma sala pública disponível</h3>
+                               <p class="empty-description">Seja o primeiro a criar uma sala para a comunidade!</p>
+                               <button class="btn btn-primary" onclick="document.getElementById('createRoomBtn').click()">
+                                   Criar Primeira Sala
+                               </button>
+                           </div>
+                       {% endif %}
+                   </div>
+                   
+                   {% if public_rooms and public_rooms|length == 12 %}
+                   <div class="load-more-container">
+                       <button id="loadMoreRoomsBtn" class="btn btn-secondary">
+                           Carregar Mais Salas
+                       </button>
+                   </div>
+                   {% endif %}
+               </div>
+               
+               <!-- Seção de Minhas Salas -->
+               {% if user_rooms %}
+               <div class="rooms-section">
+                   <div class="section-header">
+                       <h2 class="section-title">🏠 Minhas Salas</h2>
+                       <p class="section-subtitle">Salas que você criou ou está participando</p>
+                   </div>
+                   
+                   <div class="rooms-grid">
+                       {% for room in user_rooms %}
+                       <div class="room-card my-room-card" data-room-id="{{ room.id }}">
+                           <div class="room-header">
+                               <h3 class="room-name">{{ room.name }}</h3>
+                               <div class="room-participants">
+                                   <span class="participants-count">{{ room.current_participants }}/{{ room.max_participants }}</span>
+                                   <span class="participants-icon">👥</span>
+                               </div>
+                           </div>
+                           
+                           <div class="room-description">
+                               {{ room.description or 'Sem descrição disponível' }}
+                           </div>
+                           
+                           <div class="room-footer">
+                               <div class="room-info">
+                                   {% if room.is_private %}
+                                       <span class="room-badge private">🔒 Privada</span>
+                                   {% else %}
+                                       <span class="room-badge public">🌟 Pública</span>
+                                   {% endif %}
+                                   
+                                   {% if room.user_role == 'owner' %}
+                                       <span class="role-badge owner">👑 Proprietário</span>
+                                   {% else %}
+                                       <span class="role-badge participant">👤 Participante</span>
+                                   {% endif %}
+                               </div>
+                               
+                               <a href="{{ url_for('room_view', room_id=room.id) }}" class="btn btn-primary btn-sm">
+                                   Entrar
+                               </a>
+                           </div>
+                       </div>
+                       {% endfor %}
+                   </div>
+               </div>
+               {% endif %}
+               
+               <!-- Informações do Usuário -->
+               <div class="user-info">
+                   <div class="user-avatar">
+                       {{ user.username[0].upper() }}
+                   </div>
+                   <div class="user-details">
+                       <h2 class="user-name">{{ user.username }}</h2>
+                       <div class="user-meta">
+                           Membro desde {{ user.created_at[:10] if user.created_at else 'N/A' }}
+                           {% if user.last_login %}
+                           • Último acesso: {{ user.last_login[:10] }}
+                           {% endif %}
+                       </div>
+                   </div>
+               </div>
+           </div>
+       </section>
+   </main>
+
+   <!-- Modal de Criar Sala -->
+   <div id="createRoomModal" class="modal hidden">
+       <div class="modal-content">
+           <button id="closeCreateRoomModal" class="modal-close" aria-label="Fechar modal">×</button>
+           
+           <div class="modal-header">
+               <h2 class="modal-title gradient-text">Criar Nova Sala</h2>
+               <p class="modal-subtitle">Configure sua sala de streaming</p>
+           </div>
+           
+           <form id="createRoomForm" class="form">
+               <div class="form-group">
+                   <label for="roomName" class="form-label">Nome da Sala *</label>
+                   <input 
+                       type="text" 
+                       id="roomName" 
+                       class="input-field" 
+                       placeholder="Nome da sua sala" 
+                       required 
+                       maxlength="100"
+                   >
+               </div>
+               
+               <div class="form-group">
+                   <label for="roomDescription" class="form-label">Descrição</label>
+                   <textarea 
+                       id="roomDescription" 
+                       class="input-field textarea" 
+                       placeholder="Descreva sua sala (opcional)" 
+                       maxlength="500"
+                       rows="3"
+                   ></textarea>
+               </div>
+               
+               <div class="form-group">
+                   <label for="streamUrl" class="form-label">URL de Transmissão *</label>
+                   <input 
+                       type="url" 
+                       id="streamUrl" 
+                       class="input-field" 
+                       placeholder="https://exemplo.com/video" 
+                       required
+                   >
+               </div>
+               
+               <div class="form-group">
+                   <label for="maxParticipants" class="form-label">Máximo de Participantes *</label>
+                   <input 
+                       type="number" 
+                       id="maxParticipants" 
+                       class="input-field" 
+                       placeholder="10" 
+                       min="2" 
+                       max="50" 
+                       value="10"
+                       required
+                   >
+               </div>
+               
+               <div class="form-group">
+                   <label for="roomPassword" class="form-label">Senha (Opcional)</label>
+                   <input 
+                       type="password" 
+                       id="roomPassword" 
+                       class="input-field" 
+                       placeholder="Deixe vazio para sala pública" 
+                       maxlength="50"
+                   >
+                   <small class="form-help">Se definir senha, a sala será privada</small>
+               </div>
+               
+               <button type="submit" id="createRoomSubmitBtn" class="btn btn-primary btn-lg w-full">
+                   Criar Sala
+               </button>
+           </form>
+       </div>
+   </div>
+
+   <!-- Modal de Entrar em Sala Privada -->
+   <div id="joinPrivateRoomModal" class="modal hidden">
+       <div class="modal-content">
+           <button id="closeJoinPrivateRoomModal" class="modal-close" aria-label="Fechar modal">×</button>
+           
+           <div class="modal-header">
+               <h2 class="modal-title gradient-text">Entrar em Sala Privada</h2>
+               <p class="modal-subtitle">Digite o código da sala para entrar</p>
+           </div>
+           
+           <form id="joinPrivateRoomForm" class="form">
+               <div class="form-group">
+                   <label for="roomCode" class="form-label">Código da Sala *</label>
+                   <input 
+                       type="text" 
+                       id="roomCode" 
+                       class="input-field" 
+                       placeholder="ABC12345" 
+                       required 
+                       maxlength="8"
+                       style="text-transform: uppercase;"
+                   >
+               </div>
+               
+               <div class="form-group">
+                   <label for="roomPasswordPrivate" class="form-label">Senha da Sala</label>
+                   <input 
+                       type="password" 
+                       id="roomPasswordPrivate" 
+                       class="input-field" 
+                       placeholder="Digite a senha se necessário" 
+                       maxlength="50"
+                   >
+               </div>
+               
+               <button type="submit" id="joinPrivateRoomSubmitBtn" class="btn btn-primary btn-lg w-full">
+                   Entrar na Sala
+               </button>
+           </form>
+       </div>
+   </div>
+
+   <!-- Toast Notifications -->
+   <div id="toast" class="toast-container">
+       <div id="toastContent" class="toast">
+           <div id="toastMessage"></div>
+       </div>
+   </div>
+
+   <script src="{{ url_for('static', filename='js/core/base.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/utils/validators.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/utils/helpers.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/pages/dashboard.js') }}"></script>
+</body>
+</html>
