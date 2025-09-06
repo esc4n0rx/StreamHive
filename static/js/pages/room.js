@@ -331,21 +331,27 @@ class RoomPage {
             this.chat.loadMessages(data.chat_messages);
         }
 
-        // Sincronizar vídeo se necessário
+        // Sincronizar vídeo se necessário - aguardar vídeo carregar
         if (data.is_playing || data.current_time > 0) {
-            setTimeout(() => {
-                this.videoPlayer.sync({
-                    action: data.is_playing ? 'play' : 'pause',
-                    current_time: data.current_time,
-                    is_playing: data.is_playing,
-                    timestamp: Date.now() / 1000
-                });
-            }, 1000); // Aguardar carregamento do vídeo
+            // Aguardar o vídeo carregar antes de sincronizar
+            const syncVideo = () => {
+                if (this.isVideoLoaded) {
+                    this.videoPlayer.sync({
+                        action: data.is_playing ? 'play' : 'pause',
+                        current_time: data.current_time,
+                        is_playing: data.is_playing,
+                        timestamp: data.timestamp
+                    });
+                } else {
+                    // Tentar novamente em 100ms
+                    setTimeout(syncVideo, 100);
+                }
+            };
+            
+            // Iniciar sincronização após pequeno delay
+            setTimeout(syncVideo, 200);
         }
-
-        console.log('✅ Sala totalmente carregada');
     }
-
     // Gerenciamento de participantes
     addParticipant(data) {
         this.participants[data.user_id] = {

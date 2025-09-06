@@ -154,16 +154,27 @@ class SocketService:
                     'role': user_role,
                     'participants_count': len(room_states[room_id]['participants'])
                 }, room=room_id)
+
+
+                current_video_time = room_states[room_id]['current_time']
+
+                if room_states[room_id]['is_playing']:
+                    elapsed_time = time.time() - room_states[room_id]['last_update']
+                    current_video_time += elapsed_time
+                    
+                    # Atualizar o estado da sala com o tempo atual
+                    room_states[room_id]['current_time'] = current_video_time
+                    room_states[room_id]['last_update'] = time.time()
                 
-                # Enviar estado atual da sala para o usuário
                 emit('room_state', {
                     'video_url': room_states[room_id]['video_url'],
-                    'current_time': room_states[room_id]['current_time'],
+                    'current_time': current_video_time,
                     'is_playing': room_states[room_id]['is_playing'],
                     'participants': room_states[room_id]['participants'],
-                    'chat_messages': room_states[room_id]['chat_messages'][-50:],  # Últimas 50 mensagens
+                    'chat_messages': room_states[room_id]['chat_messages'][-50:],
                     'user_role': user_role,
-                    'room_owner_id': room_data['owner_id']
+                    'room_owner_id': room_data['owner_id'],
+                    'timestamp': time.time()  # Adicionar timestamp para compensar latência
                 })
                 
                 self.logger.info(f"Usuário {username} entrou na sala {room_id}")
