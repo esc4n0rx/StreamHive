@@ -434,7 +434,7 @@ class DashboardPage {
         setButtonLoading(submitBtn, true);
         
         try {
-            const response = await fetch('/join_room', {
+            const response = await fetch('/api/rooms/join', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -475,7 +475,7 @@ class DashboardPage {
         setButtonLoading(btn, true);
         
         try {
-            const response = await fetch(`/join_room/${roomId}`, {
+            const response = await fetch(`/api/rooms/join/${roomId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
