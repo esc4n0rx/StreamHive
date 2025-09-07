@@ -1,0 +1,175 @@
+/* ========================================
+   STREAMHIVE - ROOM REDESIGN STYLES
+======================================== */
+
+.room-container {
+    min-height: 100vh;
+    padding-top: 80px; /* Espaço para o header fixo */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.room-content {
+    width: 100%;
+    max-width: 1200px;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Barra de Ações */
+.room-actions-bar {
+    display: flex;
+    gap: 12px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius-lg);
+    padding: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.action-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 8px 16px;
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    position: relative;
+}
+
+.action-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.action-btn.danger:hover {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: var(--error-color);
+    color: var(--error-color);
+}
+
+.action-icon { font-size: 1rem; }
+.badge {
+    background: var(--primary-yellow);
+    color: var(--charcoal);
+    border-radius: 12px;
+    padding: 2px 8px;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+/* Footer com Detalhes */
+.room-footer-details {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius-lg);
+    padding: 24px;
+    text-align: center;
+}
+
+.room-title-footer {
+    font-size: clamp(1.25rem, 4vw, 1.75rem);
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.room-description-footer {
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 16px;
+    font-size: 0.875rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.room-meta-footer {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.meta-item { display: flex; align-items: center; gap: 6px; }
+
+/* Botão Flutuante (FAB) */
+.fab-chat {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--primary-yellow) 0%, var(--primary-orange) 100%);
+    color: var(--charcoal);
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    box-shadow: var(--shadow-dark);
+    z-index: var(--z-content);
+    transition: transform 0.3s ease;
+}
+
+.fab-chat:hover { transform: scale(1.1); }
+
+.fab-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: var(--error-color);
+    color: white;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--dark-bg);
+    transform: scale(0);
+    transition: transform 0.2s ease-out;
+}
+
+.fab-badge.visible { transform: scale(1); }
+
+/* Estilos dos Modais */
+#participantsModal .modal-content { max-width: 400px; padding: 24px; }
+#participantsModal .participants-list { max-height: 60vh; overflow-y: auto; }
+#chatModal .modal-content {
+    width: 100%;
+    max-width: 450px;
+    height: 80vh;
+    max-height: 600px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+#chatModal .chat-wrapper { border: none; height: 100%; }
+#chatModal .modal-close { z-index: 10; }
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .room-content { padding: 16px 12px; }
+    .action-label { display: none; }
+    .action-btn { padding: 10px; }
+    .fab-chat { bottom: 16px; right: 16px; width: 56px; height: 56px; }
+    #chatModal .modal-content {
+        max-width: 95vw;
+        height: 75vh;
+    }
+}

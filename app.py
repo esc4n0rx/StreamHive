@@ -275,13 +275,22 @@ def room_view(room_id):
             return redirect(url_for('dashboard'))
         
         user_role = participant_query[0]['role']
+
+        # Adicionar informações do provedor para o template
+        provider_details = {
+            'external': {'name': 'Externo', 'icon': '🔗'},
+            'youtube': {'name': 'YouTube', 'icon': '📺'},
+            'netflix': {'name': 'Netflix', 'icon': '🎬'}
+        }
+        provider_info = provider_details.get(room['provider_type'], provider_details['external'])
         
         # Preparar dados para o template
         room_data = {
             'room': room,
             'user_id': user_id,
             'user_role': user_role,
-            'is_owner': room['owner_id'] == user_id
+            'is_owner': room['owner_id'] == user_id,
+            'provider_info': provider_info  # Nova informação
         }
         
         # Renderizar template da sala

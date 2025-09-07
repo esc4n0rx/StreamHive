@@ -2,9 +2,7 @@
  * Streamhive - Validadores Frontend
  * Funções de validação para uso no frontend
  */
-
 const Validators = {
-    // Validação de email
     email(email) {
         if (!email || typeof email !== 'string') return false;
         
@@ -17,7 +15,6 @@ const Validators = {
         return pattern.test(email);
     },
 
-    // Validação de username
     username(username) {
         if (!username || typeof username !== 'string') return false;
         
@@ -30,7 +27,6 @@ const Validators = {
         return pattern.test(username);
     },
 
-    // Validação de senha
     password(password) {
         if (!password || typeof password !== 'string') return false;
         
@@ -40,13 +36,12 @@ const Validators = {
         return true;
     },
 
-    // Validação de idade
     age(age) {
         const ageNum = parseInt(age);
         return !isNaN(ageNum) && ageNum >= 13 && ageNum <= 120;
     },
 
-    // Validação de nome de sala
+
     roomName(name) {
         if (!name || typeof name !== 'string') return false;
         
@@ -58,7 +53,6 @@ const Validators = {
         return pattern.test(trimmed);
     },
 
-    // Validação de URL
     url(url) {
         if (!url || typeof url !== 'string') return false;
         
@@ -67,15 +61,12 @@ const Validators = {
         return pattern.test(url) && url.length <= 2048;
     },
 
-    // Validação de código de sala
     roomCode(code) {
         if (!code || typeof code !== 'string') return false;
         
         return code.length === 8 && /^[A-Z0-9]+$/.test(code);
     },
 
-    // Validação de senha de sala
-    // Validação de senha de sala
    roomPassword(password) {
        if (!password || typeof password !== 'string') return false;
        
@@ -86,7 +77,6 @@ const Validators = {
        return true;
    },
 
-   // Análise de força da senha
    passwordStrength(password) {
        if (!password) {
            return {
@@ -99,7 +89,6 @@ const Validators = {
        let score = 0;
        const feedback = [];
 
-       // Critérios de pontuação
        if (password.length >= 8) {
            score += 1;
        } else {
@@ -136,7 +125,6 @@ const Validators = {
            feedback.push('Adicione símbolos especiais');
        }
 
-       // Penalidades
        if (/(.)\1{2,}/.test(password)) {
            score -= 1;
            feedback.push('Evite caracteres repetidos');
@@ -147,7 +135,6 @@ const Validators = {
            feedback.push('Evite sequências óbvias');
        }
 
-       // Determinar nível
        let level;
        if (score <= 1) {
            level = 'muito_fraca';
@@ -168,7 +155,6 @@ const Validators = {
        };
    },
 
-   // Validação de número de participantes
    maxParticipants(num) {
        const participants = parseInt(num);
        return !isNaN(participants) && participants >= 2 && participants <= 50;
@@ -178,19 +164,19 @@ const Validators = {
    sanitizeString(text, maxLength = 255) {
        if (!text || typeof text !== 'string') return '';
        
-       // Remover caracteres de controle
+
        let sanitized = text.replace(/[\x00-\x1f\x7f-\x9f]/g, '');
        
-       // Limitar comprimento
+
        sanitized = sanitized.substring(0, maxLength);
        
-       // Remover espaços extras
+
        sanitized = sanitized.replace(/\s+/g, ' ').trim();
        
        return sanitized;
    },
 
-   // Validação de formulário completo
+
    validateForm(formData, rules) {
        const errors = [];
        
@@ -198,13 +184,12 @@ const Validators = {
            const value = formData[field];
            const rule = rules[field];
            
-           // Verificar se é obrigatório
+
            if (rule.required && (!value || (typeof value === 'string' && !value.trim()))) {
                errors.push(`${rule.label || field} é obrigatório`);
                return;
            }
            
-           // Aplicar validações específicas
            if (value && rule.validator && !rule.validator(value)) {
                errors.push(rule.message || `${rule.label || field} é inválido`);
            }
@@ -217,12 +202,10 @@ const Validators = {
    }
 };
 
-// Exportar para uso global
 if (typeof window !== 'undefined') {
    window.Validators = Validators;
 }
 
-// Exportar para módulos (se suportado)
 if (typeof module !== 'undefined' && module.exports) {
    module.exports = Validators;
 }

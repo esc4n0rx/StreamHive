@@ -2,7 +2,6 @@
  * Streamhive - Funções Auxiliares
  * Utilitários e helpers reutilizáveis
  */
-
 const Helpers = {
     // Formatação de data
     formatDate(date, format = 'dd/mm/yyyy') {
@@ -28,7 +27,6 @@ const Helpers = {
             .replace('ii', minutes);
     },
 
-    // Formatação de tempo relativo
     formatRelativeTime(date) {
         if (typeof date === 'string') {
             date = new Date(date);
@@ -52,7 +50,6 @@ const Helpers = {
         return this.formatDate(date);
     },
 
-    // Formatação de números
     formatNumber(num, options = {}) {
         const {
             locale = 'pt-BR',
@@ -66,7 +63,6 @@ const Helpers = {
         }).format(num);
     },
 
-    // Abreviação de números grandes
     abbreviateNumber(num) {
         if (num < 1000) return num.toString();
         
@@ -81,7 +77,6 @@ const Helpers = {
         return `${num.toFixed(1).replace('.0', '')}${units[unitIndex]}`;
     },
 
-    // Escape HTML
     escapeHtml(text) {
         const map = {
             '&': '&amp;',
@@ -95,14 +90,12 @@ const Helpers = {
         return text ? String(text).replace(/[&<>"'\/]/g, s => map[s]) : '';
     },
 
-    // Truncar texto
     truncateText(text, maxLength, suffix = '...') {
         if (!text || text.length <= maxLength) return text;
         
         return text.substring(0, maxLength - suffix.length) + suffix;
     },
 
-    // Gerar ID único
     generateId(prefix = '', length = 8) {
         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         let result = prefix;
@@ -114,7 +107,6 @@ const Helpers = {
         return result;
     },
 
-    // Detectar tipo de dispositivo
     getDeviceType() {
         const userAgent = navigator.userAgent.toLowerCase();
         
@@ -129,7 +121,6 @@ const Helpers = {
         return 'desktop';
     },
 
-    // Detectar sistema operacional
     getOS() {
         const userAgent = navigator.userAgent.toLowerCase();
         
@@ -142,7 +133,6 @@ const Helpers = {
         return 'Unknown';
     },
 
-    // Detectar navegador
     getBrowser() {
         const userAgent = navigator.userAgent.toLowerCase();
         
@@ -155,7 +145,6 @@ const Helpers = {
         return 'Unknown';
     },
 
-    // Verificar suporte a recursos
     supportsFeature(feature) {
         const features = {
             webrtc: !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia),
@@ -179,7 +168,6 @@ const Helpers = {
         return features[feature.toLowerCase()] || false;
     },
 
-    // Função de retry para operações que podem falhar
     async retry(fn, maxAttempts = 3, delay = 1000) {
         let lastError;
         
@@ -193,13 +181,11 @@ const Helpers = {
                     throw lastError;
                 }
                 
-                // Esperar antes do próximo attempt
                 await new Promise(resolve => setTimeout(resolve, delay * attempt));
             }
         }
     },
 
-    // Verificar se elemento está visível na viewport
     isElementVisible(element) {
         if (!element) return false;
         
@@ -215,7 +201,6 @@ const Helpers = {
         );
     },
 
-    // Scroll suave para elemento
     scrollToElement(element, offset = 0) {
         if (!element) return;
         
@@ -227,7 +212,6 @@ const Helpers = {
         });
     },
 
-    // Converter arquivo para base64
     fileToBase64(file) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -237,13 +221,11 @@ const Helpers = {
         });
     },
 
-    // Validar tamanho de arquivo
     validateFileSize(file, maxSizeMB = 5) {
         const maxSizeBytes = maxSizeMB * 1024 * 1024;
         return file.size <= maxSizeBytes;
     },
 
-    // Validar tipo de arquivo
     validateFileType(file, allowedTypes = []) {
         if (!allowedTypes.length) return true;
         
@@ -255,7 +237,6 @@ const Helpers = {
         });
     },
 
-    // Criar URL para download de arquivo
     createDownloadUrl(data, filename, type = 'text/plain') {
         const blob = new Blob([data], { type });
         const url = URL.createObjectURL(blob);
@@ -265,11 +246,10 @@ const Helpers = {
         link.download = filename;
         link.click();
         
-        // Cleanup
         setTimeout(() => URL.revokeObjectURL(url), 100);
     },
 
-    // Função para fazer deep clone de objetos
+
     deepClone(obj) {
         if (obj === null || typeof obj !== 'object') return obj;
         if (obj instanceof Date) return new Date(obj.getTime());
@@ -283,7 +263,7 @@ const Helpers = {
         }
     },
 
-    // Merge profundo de objetos
+
     deepMerge(target, source) {
         const result = this.deepClone(target);
         
@@ -298,7 +278,6 @@ const Helpers = {
         return result;
     },
 
-    // Função para aguardar elemento aparecer no DOM
     waitForElement(selector, timeout = 5000) {
         return new Promise((resolve, reject) => {
             const element = document.querySelector(selector);
@@ -328,12 +307,10 @@ const Helpers = {
     }
 };
 
-// Exportar para uso global
 if (typeof window !== 'undefined') {
     window.Helpers = Helpers;
 }
 
-// Exportar para módulos (se suportado)
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = Helpers;
 }

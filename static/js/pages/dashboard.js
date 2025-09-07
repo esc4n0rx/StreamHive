@@ -2,13 +2,10 @@
  * Streamhive - Dashboard
  * JavaScript específico para o dashboard
  */
-
 class DashboardPage {
     constructor() {
         this.currentPage = 1;
         this.loadingMore = false;
-        
-        // Provider selection properties
         this.selectedProvider = null;
         this.providerCards = null;
         this.providerSection = null;
@@ -44,33 +41,26 @@ class DashboardPage {
         this.setupAutoRefresh();
         this.animateCards();
         this.updateStats();
-        
-        console.log('📊 Dashboard inicializado');
     }
 
     setupEventListeners() {
-        // Botões principais
         this.elements.createRoomBtn?.addEventListener('click', () => {
             this.resetModal();
             StreamhiveApp.modal.open('createRoomModal');
         });
         this.elements.joinPrivateRoomBtn?.addEventListener('click', () => StreamhiveApp.modal.open('joinPrivateRoomModal'));
         
-        // Botões para fechar modais
         this.elements.closeCreateRoomModal?.addEventListener('click', () => {
             this.resetModal();
             StreamhiveApp.modal.close('createRoomModal');
         });
         this.elements.closeJoinPrivateRoomModal?.addEventListener('click', () => StreamhiveApp.modal.close('joinPrivateRoomModal'));
         
-        // Forms
         this.elements.createRoomForm?.addEventListener('submit', this.handleCreateRoom.bind(this));
         this.elements.joinPrivateRoomForm?.addEventListener('submit', this.handleJoinPrivateRoom.bind(this));
-        
-        // Botão carregar mais
+    
         this.elements.loadMoreRoomsBtn?.addEventListener('click', this.loadMoreRooms.bind(this));
         
-        // Botões de entrar em sala
         document.querySelectorAll('.join-room-btn').forEach(btn => {
             btn.addEventListener('click', this.handleJoinPublicRoom.bind(this));
         });
@@ -84,12 +74,10 @@ class DashboardPage {
         this.netflixNotice = document.getElementById('netflixNotice');
         this.backBtn = document.getElementById('backToProvider');
         
-        // Event listeners para cards
         this.providerCards.forEach(card => {
             card.addEventListener('click', (e) => this.selectProvider(e));
         });
         
-        // Event listener para voltar
         if (this.backBtn) {
             this.backBtn.addEventListener('click', () => this.goBackToProvider());
         }
@@ -105,16 +93,14 @@ class DashboardPage {
         //     return;
         // }
         
-        // Remover seleção anterior
+
         this.providerCards.forEach(c => c.classList.remove('selected'));
         
-        // Adicionar seleção atual
         card.classList.add('selected');
         this.selectedProvider = provider;
 
 
-         if (provider === 'netflix') {
-        // Netflix: esconder URL, mostrar aviso informativo
+    if (provider === 'netflix') {
         this.urlSection.classList.add('hidden');
         this.netflixNotice.classList.remove('hidden');
         this.netflixNotice.innerHTML = `
@@ -128,29 +114,22 @@ class DashboardPage {
             </div>
         `;
     } else {
-        // Outros providers: mostrar URL, esconder Netflix notice
         this.urlSection.classList.remove('hidden');
         this.netflixNotice.classList.add('hidden');
     }
         
-        // Aguardar animação e mostrar configuração
         setTimeout(() => {
             this.showConfiguration(provider);
         }, 300);
     }
     
     showConfiguration(provider) {
-        // Esconder seleção de provider
         this.providerSection.classList.add('hidden');
-        
-        // Configurar campos baseado no provider
         this.configureForProvider(provider);
         
-        // Mostrar configuração
         setTimeout(() => {
             this.configSection.classList.remove('hidden');
             
-            // Focar no primeiro campo
             const firstInput = this.configSection.querySelector('input');
             if (firstInput) {
                 firstInput.focus();
@@ -164,7 +143,6 @@ class DashboardPage {
         
         switch (provider) {
             case 'netflix':
-                // Ocultar URL e mostrar notice
                 this.urlSection.classList.add('hidden');
                 this.netflixNotice.classList.remove('hidden');
                 if (streamUrlField) {
@@ -174,7 +152,6 @@ class DashboardPage {
                 break;
                 
             case 'youtube':
-                // Mostrar URL com label específico
                 this.urlSection.classList.remove('hidden');
                 this.netflixNotice.classList.add('hidden');
                 if (urlLabel) {
@@ -188,7 +165,6 @@ class DashboardPage {
                 break;
                 
             case 'external':
-                // Mostrar URL com label genérico
                 this.urlSection.classList.remove('hidden');
                 this.netflixNotice.classList.add('hidden');
                 if (urlLabel) {
@@ -204,23 +180,19 @@ class DashboardPage {
     }
     
     goBackToProvider() {
-        // Esconder configuração
         this.configSection.classList.add('hidden');
         
-        // Mostrar seleção de provider
         setTimeout(() => {
             this.providerSection.classList.remove('hidden');
         }, 150);
     }
     
     resetModal() {
-        // Resetar seleção
         this.selectedProvider = null;
         if (this.providerCards) {
             this.providerCards.forEach(card => card.classList.remove('selected'));
         }
         
-        // Mostrar seleção e esconder configuração
         if (this.providerSection) {
             this.providerSection.classList.remove('hidden');
         }
@@ -228,7 +200,6 @@ class DashboardPage {
             this.configSection.classList.add('hidden');
         }
         
-        // Limpar form
         const form = document.getElementById('createRoomForm');
         if (form) {
             form.reset();
@@ -240,7 +211,7 @@ class DashboardPage {
     }
 
     setupFormValidation() {
-        // Validação para nome da sala
+
         const roomNameInput = document.getElementById('roomName');
         if (roomNameInput) {
             roomNameInput.addEventListener('input', (e) => {
@@ -258,7 +229,6 @@ class DashboardPage {
             });
         }
 
-        // Validação para URL de stream
         const streamUrlInput = document.getElementById('streamUrl');
         if (streamUrlInput) {
             streamUrlInput.addEventListener('input', (e) => {
@@ -277,7 +247,6 @@ class DashboardPage {
             });
         }
 
-        // Validação para código de sala
         const roomCodeInput = document.getElementById('roomCode');
         if (roomCodeInput) {
             roomCodeInput.addEventListener('input', (e) => {
@@ -295,7 +264,6 @@ class DashboardPage {
             });
         }
 
-        // Contador de caracteres para descrição
         const descriptionInput = document.getElementById('roomDescription');
         if (descriptionInput) {
             const charCounter = document.createElement('div');
@@ -320,16 +288,13 @@ class DashboardPage {
     }
 
     setupAutoRefresh() {
-        // Atualizar dados das salas a cada 30 segundos
         setInterval(() => {
             this.updateRoomStates();
         }, 30000);
     }
 
     updateRoomStates() {
-        // Atualizar estados das salas existentes
         const roomCards = document.querySelectorAll('.room-card');
-        
         roomCards.forEach(card => {
             const participantCount = card.querySelector('.participant-count');
             const maxParticipants = card.querySelector('.max-participants');
@@ -339,7 +304,6 @@ class DashboardPage {
                 const current = parseInt(participantCount.textContent) || 0;
                 const max = parseInt(maxParticipants.textContent) || 0;
                 
-                // Atualizar texto do botão baseado na lotação
                 joinBtn.textContent = current >= max ? 'Lotada' : 'Entrar';
                 joinBtn.disabled = current >= max;
             }
@@ -351,7 +315,6 @@ class DashboardPage {
         
         const submitBtn = document.getElementById('createRoomSubmitBtn');
         
-        // Verificar se estamos na tela de seleção
         if (!this.selectedProvider) {
             toast.show('Selecione uma plataforma de streaming primeiro', 'warning');
             return;
@@ -363,10 +326,9 @@ class DashboardPage {
             stream_url: this.selectedProvider === 'netflix' ? 'https://www.netflix.com' : document.getElementById('streamUrl').value.trim(),
             max_participants: parseInt(document.getElementById('maxParticipants').value),
             password: document.getElementById('roomPassword').value.trim() || null,
-            provider_type: this.selectedProvider // Adicionar provider
+            provider_type: this.selectedProvider
         };
         
-        // Validações
         const errors = this.validateRoomData(formData);
         if (errors.length > 0) {
             toast.show(errors[0], 'error');
@@ -390,7 +352,6 @@ class DashboardPage {
                 toast.show(data.message || 'Sala criada com sucesso!', 'success');
                 modal.close('createRoomModal');
                 
-                // Redirecionar para a sala criada
                 if (data.redirect) {
                     setTimeout(() => {
                         window.location.href = data.redirect;
@@ -448,7 +409,6 @@ class DashboardPage {
                 toast.show(data.message || 'Entrando na sala...', 'success');
                 modal.close('joinPrivateRoomModal');
                 
-                // Redirecionar para a sala
                 if (data.redirect) {
                     setTimeout(() => {
                         window.location.href = data.redirect;
@@ -475,11 +435,14 @@ class DashboardPage {
         setButtonLoading(btn, true);
         
         try {
-            const response = await fetch(`/api/rooms/join/${roomId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+            const response = await fetch('/api/rooms/join', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                room_id: parseInt(roomId)
+            })
             });
             
             const data = await response.json();
@@ -576,7 +539,6 @@ class DashboardPage {
             </div>
         `;
         
-        // Adicionar event listener ao botão
         const joinBtn = card.querySelector('.join-room-btn');
         if (joinBtn && !isRoomFull) {
             joinBtn.addEventListener('click', this.handleJoinPublicRoom.bind(this));
@@ -608,7 +570,6 @@ class DashboardPage {
                 observer.observe(card);
             });
         } else {
-            // Fallback para navegadores sem IntersectionObserver
             cards.forEach((card, index) => {
                 setTimeout(() => {
                     card.style.opacity = '1';
@@ -622,13 +583,11 @@ class DashboardPage {
     validateRoomData(formData) {
         const errors = [];
         
-        // Validar provider selecionado
         if (!this.selectedProvider) {
             errors.push('Selecione uma plataforma de streaming');
             return errors;
         }
         
-        // Validações básicas
         if (!formData.name || formData.name.length < 3) {
             errors.push('Nome da sala deve ter pelo menos 3 caracteres');
         }
@@ -637,7 +596,6 @@ class DashboardPage {
             errors.push('Nome da sala não pode ter mais de 100 caracteres');
         }
         
-        // Validar URL apenas se necessário
         if (this.selectedProvider !== 'netflix') {
             if (!formData.stream_url || formData.stream_url.trim() === '') {
                 errors.push('URL de transmissão é obrigatória');
@@ -649,7 +607,6 @@ class DashboardPage {
                 }
             }
             
-            // Validação específica do YouTube
             if (this.selectedProvider === 'youtube' && formData.stream_url) {
                 const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+/;
                 if (!youtubeRegex.test(formData.stream_url)) {
@@ -684,7 +641,6 @@ class DashboardPage {
         return text ? text.replace(/[&<>"']/g, m => map[m]) : '';
     }
 
-    // Método para atualizar estatísticas do dashboard
     async updateStats() {
         try {
             const response = await fetch('/api/stats');
@@ -704,7 +660,6 @@ class DashboardPage {
     }
 }
 
-// Inicializar quando DOM estiver pronto
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         new DashboardPage();
@@ -713,5 +668,4 @@ if (document.readyState === 'loading') {
     new DashboardPage();
 }
 
-// Exportar para uso global se necessário
 window.DashboardPage = DashboardPage;

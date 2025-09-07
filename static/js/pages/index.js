@@ -2,7 +2,6 @@
  * Streamhive - Página Inicial
  * JavaScript específico para a home page
  */
-
 class IndexPage {
     constructor() {
         this.elements = {
@@ -30,31 +29,24 @@ class IndexPage {
         this.setupEventListeners();
         this.setupFormValidation();
         this.setupAnimations();
-        
-        console.log('🏠 Página inicial inicializada');
     }
 
     setupEventListeners() {
-        // Botões para abrir modais
         this.elements.loginBtn?.addEventListener('click', () => StreamhiveApp.modal.open('loginModal'));
         this.elements.registerBtn?.addEventListener('click', () => StreamhiveApp.modal.open('registerModal'));
         this.elements.getStartedBtn?.addEventListener('click', () => StreamhiveApp.modal.open('registerModal'));
 
-        // Botões para fechar modais
         this.elements.closeLoginModal?.addEventListener('click', () => StreamhiveApp.modal.close('loginModal'));
         this.elements.closeRegisterModal?.addEventListener('click', () => StreamhiveApp.modal.close('registerModal'));
 
-        // Botões para alternar entre modais
         this.elements.switchToRegister?.addEventListener('click', () => StreamhiveApp.modal.switch('loginModal', 'registerModal'));
         this.elements.switchToLogin?.addEventListener('click', () => StreamhiveApp.modal.switch('registerModal', 'loginModal'));
 
-        // Forms
         this.elements.loginForm?.addEventListener('submit', this.handleLogin.bind(this));
         this.elements.registerForm?.addEventListener('submit', this.handleRegister.bind(this));
     }
 
     setupFormValidation() {
-        // Validação em tempo real para username de registro
         const registerUsername = document.getElementById('registerUsername');
         if (registerUsername) {
             registerUsername.addEventListener('input', (e) => {
@@ -72,7 +64,6 @@ class IndexPage {
             });
         }
 
-        // Validação para email
         const registerEmail = document.getElementById('registerEmail');
         if (registerEmail) {
             registerEmail.addEventListener('input', (e) => {
@@ -91,7 +82,6 @@ class IndexPage {
             });
         }
 
-        // Validação para senha
         const registerPassword = document.getElementById('registerPassword');
         if (registerPassword) {
             registerPassword.addEventListener('input', (e) => {
@@ -109,7 +99,6 @@ class IndexPage {
             });
         }
 
-        // Validação para idade
         const registerAge = document.getElementById('registerAge');
         if (registerAge) {
             registerAge.addEventListener('input', (e) => {
@@ -127,9 +116,7 @@ class IndexPage {
             });
         }
     }
-
     setupAnimations() {
-        // Animação de entrada dos cards
         if (browserFeatures.supportsIntersectionObserver) {
             const cards = document.querySelectorAll('.feature-card');
             const observerOptions = {
@@ -150,7 +137,6 @@ class IndexPage {
             cards.forEach(card => cardObserver.observe(card));
         }
 
-        // Animação suave no header ao fazer scroll
         const header = document.querySelector('.fixed-header');
         if (header) {
             const throttledScrollHandler = StreamhiveApp.utils.throttle(() => {
@@ -159,12 +145,11 @@ class IndexPage {
                 } else {
                     header.classList.remove('header-scrolled');
                 }
-            }, 16); // ~60fps
+            }, 16);
 
             window.addEventListener('scroll', throttledScrollHandler, { passive: true });
         }
 
-        // Smooth scroll para links internos
         const links = document.querySelectorAll('a[href^="#"]');
         links.forEach(link => {
             link.addEventListener('click', (e) => {
@@ -190,7 +175,6 @@ class IndexPage {
         const username = document.getElementById('loginUsername').value.trim();
         const password = document.getElementById('loginPassword').value.trim();
         
-        // Validações básicas
         if (!username || !password) {
             StreamhiveApp.toast.show('Preencha todos os campos', 'error');
             return;
@@ -207,7 +191,6 @@ class IndexPage {
             StreamhiveApp.toast.show(response.message, 'success');
             StreamhiveApp.modal.close('loginModal');
             
-            // Redirect após um tempo
             setTimeout(() => {
                 window.location.href = response.redirect;
             }, 1500);
@@ -229,7 +212,6 @@ class IndexPage {
         const password = document.getElementById('registerPassword').value.trim();
         const age = parseInt(document.getElementById('registerAge').value);
         
-        // Validações no frontend
         const validationErrors = this.validateRegistrationData({ username, email, password, age });
         if (validationErrors.length > 0) {
             StreamhiveApp.toast.show(validationErrors[0], 'error');
@@ -249,7 +231,6 @@ class IndexPage {
             StreamhiveApp.toast.show(response.message, 'success');
             StreamhiveApp.modal.close('registerModal');
             
-            // Redirect após um tempo
             setTimeout(() => {
                 window.location.href = response.redirect;
             }, 1500);
@@ -288,7 +269,6 @@ class IndexPage {
         return errors;
     }
 
-    // Método para mostrar estatísticas dinâmicas (futuro)
     async loadDynamicStats() {
         try {
             const stats = await StreamhiveApp.api.get('/api/stats');
@@ -302,7 +282,6 @@ class IndexPage {
             if (stats.success && statElements.users) {
                 this.animateNumber(statElements.users, stats.stats.total_users || 1000);
                 this.animateNumber(statElements.rooms, stats.stats.total_rooms || 50);
-                // Sync sempre 100%
             }
         } catch (error) {
             console.log('Erro ao carregar estatísticas:', error);
@@ -329,8 +308,6 @@ class IndexPage {
         requestAnimationFrame(animate);
     }
 }
-
-// Inicializar quando DOM estiver pronto
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         new IndexPage();
