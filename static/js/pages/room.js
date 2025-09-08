@@ -5,7 +5,7 @@
 class RoomPage {
     constructor() {
         this.roomData = window.roomData || {};
-        this.currentUser = window.currentUser || {};
+        this.currentUser = window.currentUser || {};Preciso
 
         this.elements = {
             fabChat: document.getElementById('fabChat'),

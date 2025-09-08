@@ -2,14 +2,15 @@
 Streamhive - Aplicação Principal
 Plataforma de streaming social sincronizado
 """
-
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, make_response
 from flask_socketio import SocketIO
 from datetime import datetime, timedelta
 import os
 import logging
+from dotenv import load_dotenv
+load_dotenv()
 
-# Imports locais
+
 from database.connection import init_database
 from services.auth_service import get_auth_service
 from services.room_service import get_room_service
@@ -17,7 +18,7 @@ from services.socket_service import init_socket_service
 from proxy_server import get_proxy_server
 from utils.validators import sanitize_string
 
-# Configuração da aplicação
+
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY')
 if not app.secret_key:
@@ -30,7 +31,7 @@ app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
 
-# Inicializar Socket.IO
+
 socketio = SocketIO(
     app,
     cors_allowed_origins="*",

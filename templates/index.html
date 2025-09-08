@@ -3,294 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Streamhive - Assista Juntos</title>
+    <title>Streamhive - Assista Juntos, Onde Quer Que Estejam</title>
     
-    <!-- Preload de recursos críticos -->
     <link rel="preload" href="{{ url_for('static', filename='css/base.css') }}" as="style">
     <link rel="preload" href="{{ url_for('static', filename='css/pages/index.css') }}" as="style">
     
-    <!-- CSS Base Global -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
-    <!-- CSS Específico da Página -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/index.css') }}">
     
-    <!-- TailwindCSS para utilitários -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Meta tags para SEO -->
-    <meta name="description" content="Streamhive - Plataforma de streaming social para assistir conteúdos sincronizados com amigos">
-    <meta name="keywords" content="streaming, social, sincronizado, assistir juntos, cinema, filmes, séries">
+    <meta name="description" content="Streamhive - A plataforma definitiva para assistir vídeos, filmes e séries em perfeita sincronia com seus amigos, não importa a distância.">
+    <meta name="keywords" content="streaming, social, sincronizado, watch party, assistir juntos, cinema, filmes, séries, netflix, youtube">
     <meta name="author" content="Streamhive">
-    
-    <!-- Open Graph -->
-    <meta property="og:title" content="Streamhive - Assista Juntos">
-    <meta property="og:description" content="Conecte-se com amigos e assista conteúdos em sincronia perfeita">
-    <meta property="og:type" content="website">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
 </head>
 <body class="text-white">
-    <!-- Header Fixo -->
     <header class="fixed-header">
-        <nav class="container mx-auto px-4 sm:px-6">
+        <nav class="container">
             <div class="header-nav">
                 <div class="header-logo">
                     <div class="logo-icon">S</div>
                     <h1 class="logo-text gradient-text">Streamhive</h1>
                 </div>
-                
                 <div class="header-actions">
-                    <button id="loginBtn" class="btn btn-secondary btn-sm">
-                        Entrar
-                    </button>
-                    <button id="registerBtn" class="btn btn-primary btn-sm">
-                        Criar Conta
-                    </button>
+                    <button id="loginBtn" class="btn btn-secondary btn-sm">Entrar</button>
+                    <button id="registerBtn" class="btn btn-primary btn-sm">Criar Conta</button>
                 </div>
             </div>
         </nav>
     </header>
 
-    <!-- Conteúdo Principal -->
-    <main class="main-content">
-        <!-- Efeito Parallax de Fundo -->
-        <div class="parallax-bg"></div>
-        
-        <!-- Hero Section -->
-        <section class="hero-section">
-            <div class="container mx-auto px-4 sm:px-6">
-                <div class="hero-content">
-                    <h1 class="hero-title">
-                        Assista <span class="gradient-text">Juntos</span><br>
-                        Onde Quer Que Estejam
-                    </h1>
-                    
-                    <p class="hero-subtitle">
-                        Conecte-se com amigos e crie momentos únicos assistindo seus conteúdos favoritos em sincronia perfeita
-                    </p>
-                    
-                    <div class="hero-actions">
-                        <button id="getStartedBtn" class="btn btn-primary btn-xl pulse-animation">
-                            Começar Agora
-                        </button>
-                        <button class="btn btn-secondary btn-xl">
-                            Saiba Mais
-                        </button>
-                    </div>
-                    
-                    <div class="hero-stats">
-                        <div class="stat-item">
-                            <div class="stat-number gradient-text">1K+</div>
-                            <div class="stat-label">Usuários Ativos</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number gradient-text">50+</div>
-                            <div class="stat-label">Salas Criadas</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number gradient-text">100%</div>
-                            <div class="stat-label">Sincronização</div>
-                        </div>
+    <main>
+        <div class="background-effects">
+            <div class="circle c1"></div>
+            <div class="circle c2"></div>
+            <div class="circle c3"></div>
+        </div>
+
+        <section id="hero" class="hero-section">
+            <div class="container hero-content">
+                <h1 class="hero-title">
+                    Sua sala de cinema, <span class="gradient-text">em qualquer lugar.</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Reúna seus amigos, escolha o que assistir e compartilhe reações em tempo real. A distância nunca foi tão curta.
+                </p>
+                <div class="hero-actions">
+                    <button id="getStartedBtn" class="btn btn-primary btn-xl pulse-animation">
+                        🎬 Começar Agora (É Grátis!)
+                    </button>
+                </div>
+                <div class="supported-providers">
+                    <p>Compatível com suas plataformas favoritas</p>
+                    <div class="provider-icons">
+                        <img src="{{ url_for('static', filename='assets/desktop.png') }}" alt="Desktop">
+                        <img src="{{ url_for('static', filename='assets/tablet.png') }}" alt="Tablet">
+                        <img src="{{ url_for('static', filename='assets/smartphone.png') }}" alt="Smartphone">
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Features Section -->
-        <section class="features-section">
-            <div class="container mx-auto px-4 sm:px-6">
-                <div class="features-header">
-                    <h2 class="features-title gradient-text">
-                        Recursos Incríveis
-                    </h2>
-                    <p class="features-subtitle">
-                        Tecnologia de ponta para uma experiência única de streaming social
-                    </p>
+        <section id="how-it-works" class="how-it-works-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Como Funciona?</h2>
+                    <p class="section-subtitle">Em apenas 3 passos simples, sua sessão de cinema está pronta.</p>
                 </div>
-                
+                <div class="steps-grid">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <div class="step-icon">🏠</div>
+                        <h3 class="step-title">Crie sua Sala</h3>
+                        <p class="step-description">Escolha um nome, defina se será pública ou privada e selecione o serviço de streaming.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <div class="step-icon">💌</div>
+                        <h3 class="step-title">Convide seus Amigos</h3>
+                        <p class="step-description">Compartilhe o link da sala ou o código de acesso exclusivo com quem você quiser.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <div class="step-icon">🍿</div>
+                        <h3 class="step-title">Assista em Sincronia</h3>
+                        <p class="step-description">Dê o play! O vídeo, o áudio e até o pause são sincronizados para todos na sala.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="features-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Feito para <span class="gradient-text">Conectar</span></h2>
+                    <p class="section-subtitle">Ferramentas que transformam o ato de assistir em uma experiência social.</p>
+                </div>
                 <div class="features-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon">🎬</div>
-                        <h3 class="feature-title">Sincronização Perfeita</h3>
-                        <p class="feature-description">
-                            Assista em tempo real com seus amigos, sem atrasos ou dessincronização. Nossa tecnologia garante experiência fluida.
-                        </p>
+                    <div class="feature-card-reloaded">
+                        <img src="{{ url_for('static', filename='assets/cinema.png') }}" alt="Cinema">
+                        <h3 class="feature-title-reloaded">Sincronização Absoluta</h3>
+                        <p class="feature-description-reloaded">Play, pause, avançar ou retroceder. Cada ação do dono da sala é replicada instantaneamente para todos, garantindo que ninguém perca um segundo.</p>
                     </div>
-                    
-                    <div class="feature-card">
-                        <div class="feature-icon">💬</div>
-                        <h3 class="feature-title">Chat em Tempo Real</h3>
-                        <p class="feature-description">
-                            Converse durante a sessão com reações e comentários instantâneos. Compartilhe emoções em tempo real.
-                        </p>
+                    <div class="feature-card-reloaded">
+                        <img src="{{ url_for('static', filename='assets/chat.png') }}" alt="Chat">
+                        <h3 class="feature-title-reloaded">Chat Integrado</h3>
+                        <p class="feature-description-reloaded">Comente as melhores cenas, envie emojis e interaja com seus amigos em um chat em tempo real, sem precisar de outro aplicativo.</p>
                     </div>
-                    
-                    <div class="feature-card">
-                        <div class="feature-icon">🏠</div>
-                        <h3 class="feature-title">Salas Privadas</h3>
-                        <p class="feature-description">
-                            Crie salas exclusivas para você e seus amigos com controle total sobre quem pode participar.
-                        </p>
+                    <div class="feature-card-reloaded">
+                        <img src="{{ url_for('static', filename='assets/world.png') }}" alt="World">
+                        <h3 class="feature-title-reloaded">Multi-Plataforma</h3>
+                        <p class="feature-description-reloaded">Assista a vídeos do YouTube, navegue pela Netflix ou adicione um link de streaming externo. A escolha é sua.</p>
                     </div>
                 </div>
+            </div>
+        </section>
+        
+        <section id="cta" class="cta-section">
+            <div class="container cta-content">
+                <h2 class="cta-title">Pronto para sua primeira sessão?</h2>
+                <p class="cta-subtitle">Crie sua conta gratuita e comece a compartilhar momentos inesquecíveis.</p>
+                <button id="finalGetStartedBtn" class="btn btn-primary btn-xl">
+                    Criar minha conta agora
+                </button>
             </div>
         </section>
     </main>
 
-    <!-- Modal de Login -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; {{ current_year }} Streamhive. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
     <div id="loginModal" class="modal auth-modal hidden">
-        <div class="modal-content auth-modal-content fade-in-scale">
+        <div class="modal-content auth-modal-content">
             <button id="closeLoginModal" class="modal-close" aria-label="Fechar modal">×</button>
-            
             <div class="auth-modal-header">
                 <h2 class="auth-modal-title gradient-text">Entrar</h2>
                 <p class="auth-modal-subtitle">Bem-vindo de volta ao Streamhive!</p>
             </div>
-            
             <form id="loginForm" class="auth-form">
-                <div class="form-group">
-                    <label for="loginUsername" class="form-label">Nome de Usuário</label>
-                    <input 
-                        type="text" 
-                        id="loginUsername" 
-                        class="input-field" 
-                        placeholder="Seu nome de usuário" 
-                        required 
-                        autocomplete="username"
-                    >
-                </div>
-                
-                <div class="form-group">
-                    <label for="loginPassword" class="form-label">Senha</label>
-                    <input 
-                        type="password" 
-                        id="loginPassword" 
-                        class="input-field" 
-                        placeholder="Sua senha" 
-                        required 
-                        autocomplete="current-password"
-                    >
-                </div>
-                
-                <button type="submit" id="loginSubmitBtn" class="btn btn-primary btn-lg w-full">
-                    Entrar
-                </button>
+                <div class="form-group"><label for="loginUsername" class="form-label">Nome de Usuário</label><input type="text" id="loginUsername" class="input-field" placeholder="Seu nome de usuário" required autocomplete="username"></div>
+                <div class="form-group"><label for="loginPassword" class="form-label">Senha</label><input type="password" id="loginPassword" class="input-field" placeholder="Sua senha" required autocomplete="current-password"></div>
+                <button type="submit" id="loginSubmitBtn" class="btn btn-primary btn-lg w-full">Entrar</button>
             </form>
-            
-            <div class="auth-modal-footer">
-                <span>Não tem conta? </span>
-                <button id="switchToRegister" class="auth-modal-link">Criar conta</button>
-            </div>
+            <div class="auth-modal-footer"><span>Não tem conta? </span><button id="switchToRegister" class="auth-modal-link">Criar conta</button></div>
         </div>
     </div>
-
-    <!-- Modal de Registro -->
     <div id="registerModal" class="modal auth-modal hidden">
-        <div class="modal-content auth-modal-content fade-in-scale">
+        <div class="modal-content auth-modal-content">
             <button id="closeRegisterModal" class="modal-close" aria-label="Fechar modal">×</button>
-            
             <div class="auth-modal-header">
                 <h2 class="auth-modal-title gradient-text">Criar Conta</h2>
                 <p class="auth-modal-subtitle">Junte-se à comunidade Streamhive!</p>
             </div>
-
-    <form id="registerForm" class="auth-form">
-                <div class="form-group">
-                    <label for="registerUsername" class="form-label">Nome de Usuário</label>
-                    <input 
-                        type="text" 
-                        id="registerUsername" 
-                        class="input-field" 
-                        placeholder="Escolha um nome de usuário" 
-                        required 
-                        autocomplete="username"
-                        minlength="3"
-                        maxlength="30"
-                    >
-                </div>
-                
-                <div class="form-group">
-                    <label for="registerEmail" class="form-label">Email</label>
-                    <input 
-                        type="email" 
-                        id="registerEmail" 
-                        class="input-field" 
-                        placeholder="seu@email.com" 
-                        required 
-                        autocomplete="email"
-                    >
-                </div>
-                
-                <div class="form-group">
-                    <label for="registerPassword" class="form-label">Senha</label>
-                    <input 
-                        type="password" 
-                        id="registerPassword" 
-                        class="input-field" 
-                        placeholder="Mínimo 6 caracteres" 
-                        required 
-                        autocomplete="new-password"
-                        minlength="6"
-                        maxlength="128"
-                    >
-                </div>
-                
-                <div class="form-group">
-                    <label for="registerAge" class="form-label">Idade</label>
-                    <input 
-                        type="number" 
-                        id="registerAge" 
-                        class="input-field" 
-                        placeholder="Sua idade" 
-                        min="13" 
-                        max="120" 
-                        required
-                    >
-                </div>
-                
-                <button type="submit" id="registerSubmitBtn" class="btn btn-primary btn-lg w-full">
-                    Criar Conta
-                </button>
+            <form id="registerForm" class="auth-form">
+                <div class="form-group"><label for="registerUsername" class="form-label">Nome de Usuário</label><input type="text" id="registerUsername" class="input-field" placeholder="Escolha um nome de usuário" required autocomplete="username" minlength="3" maxlength="30"></div>
+                <div class="form-group"><label for="registerEmail" class="form-label">Email</label><input type="email" id="registerEmail" class="input-field" placeholder="seu@email.com" required autocomplete="email"></div>
+                <div class="form-group"><label for="registerPassword" class="form-label">Senha</label><input type="password" id="registerPassword" class="input-field" placeholder="Mínimo 6 caracteres" required autocomplete="new-password" minlength="6" maxlength="128"></div>
+                <div class="form-group"><label for="registerAge" class="form-label">Idade</label><input type="number" id="registerAge" class="input-field" placeholder="Sua idade" min="13" max="120" required></div>
+                <button type="submit" id="registerSubmitBtn" class="btn btn-primary btn-lg w-full">Criar Conta</button>
             </form>
-            
-            <div class="auth-modal-footer">
-                <span>Já tem conta? </span>
-                <button id="switchToLogin" class="auth-modal-link">Entrar</button>
-            </div>
+            <div class="auth-modal-footer"><span>Já tem conta? </span><button id="switchToLogin" class="auth-modal-link">Entrar</button></div>
         </div>
     </div>
 
-    <!-- Toast Notifications -->
-    <div id="toast" class="toast-container">
-        <div id="toastContent" class="toast">
-            <div id="toastMessage"></div>
-        </div>
-    </div>
+    <div id="toast" class="toast-container"><div id="toastContent" class="toast"><div id="toastMessage"></div></div></div>
 
-    <!-- JavaScript -->
     <script src="{{ url_for('static', filename='js/core/base.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/utils/validators.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/utils/helpers.js') }}"></script>
     <script src="{{ url_for('static', filename='js/pages/index.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/components/block.js') }}"></script>
-    
-    <!-- Analytics e Performance (em produção) -->
     <script>
-        // Detectar recursos do navegador
-        if ('serviceWorker' in navigator) {
-            // Service Worker para cache futuro
-        }
-        
-        // Lazy loading de imagens
-        if ('IntersectionObserver' in window) {
-            // Observer para animações
-        }
-        
-        // Performance monitoring
-        window.addEventListener('load', () => {
-            const loadTime = performance.now();
-            console.log(`🚀 Streamhive carregado em ${Math.round(loadTime)}ms`);
+        // JS específico para a nova página
+        document.addEventListener('DOMContentLoaded', () => {
+            // Animações de scroll
+            const animatedElements = document.querySelectorAll('.section-header, .step-card, .feature-card-reloaded, .cta-content');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('in-view');
+                    }
+                });
+            }, { threshold: 0.1 });
+            animatedElements.forEach(el => observer.observe(el));
+
+            // Botão CTA final abre modal de registro
+            document.getElementById('finalGetStartedBtn')?.addEventListener('click', () => {
+                StreamhiveApp.modal.open('registerModal');
+            });
         });
     </script>
 </body>
