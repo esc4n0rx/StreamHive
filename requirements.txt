@@ -7,6 +7,7 @@ Werkzeug
 Flask-SocketIO
 python-socketio
 python-engineio
+python-dotenv
 
 # Requisições HTTP para proxy
 requests
