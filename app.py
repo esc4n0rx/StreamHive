@@ -19,10 +19,13 @@ from utils.validators import sanitize_string
 
 # Configuração da aplicação
 app = Flask(__name__)
-app.secret_key = os.environ.get('SECRET_KEY', 'streamhive-secret-key-2024')
+app.secret_key = os.environ.get('SECRET_KEY')
+if not app.secret_key:
+    raise ValueError("Nenhuma SECRET_KEY definida para a aplicação")
 
-# Configurações de segurança
-app.config['SESSION_COOKIE_SECURE'] = False  # True em produção com HTTPS
+
+IS_PRODUCTION = os.environ.get('FLASK_ENV') == 'production'
+app.config['SESSION_COOKIE_SECURE'] = IS_PRODUCTION
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
