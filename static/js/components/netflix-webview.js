@@ -41,7 +41,7 @@ class NetflixWebView {
                     <iframe 
                         id="netflixWebView"
                         class="netflix-iframe"
-                        sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-top-navigation"
+                        sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
                         allow="autoplay; fullscreen; microphone; camera"
                         referrerpolicy="no-referrer-when-downgrade"
                     >
@@ -122,15 +122,15 @@ class NetflixWebView {
     loadNetflix() {
         this.showLoading();
         
-        // Configurar iframe com headers especiais para parecer navegador desktop
-        this.webview.src = 'https://www.netflix.com';
+        const netflixUrl = 'https://www.netflix.com';
+        // ✅ CORREÇÃO: Carregar a URL através do nosso proxy
+        const proxyUrl = `/proxy/page?url=${encodeURIComponent(netflixUrl)}`;
+
+        this.webview.src = proxyUrl;
         
-        // Definir user agent através de atributo (funciona em alguns navegadores)
-        this.webview.setAttribute('useragent', 
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-        );
+        // O user-agent não é mais necessário aqui, pois é definido no proxy do backend
         
-        this.currentUrl = 'https://www.netflix.com';
+        this.currentUrl = netflixUrl;
     }
 
     handleWebViewLoad() {

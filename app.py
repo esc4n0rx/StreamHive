@@ -69,6 +69,27 @@ def index():
     except Exception as e:
         logger.error(f"Erro na página inicial: {e}")
         return jsonify({'error': 'Erro interno do servidor'}), 500
+    
+    
+@app.route('/proxy/page')
+def proxy_page():
+    """Proxy para páginas web, removendo X-Frame-Options."""
+    try:
+        url = request.args.get('url')
+        if not url:
+            return jsonify({'error': 'URL não fornecida'}), 400
+        
+        if 'user_id' not in session:
+            return jsonify({'error': 'Não autenticado'}), 401
+        
+        response = proxy_server.proxy_request(url)
+        if response:
+            return response
+        else:
+            return jsonify({'error': 'Erro no proxy da página'}), 500
+    except Exception as e:
+        logger.error(f"Erro no proxy de página: {e}")
+        return jsonify({'error': 'Erro interno do servidor'}), 500
 
 
 @app.route('/register', methods=['POST'])

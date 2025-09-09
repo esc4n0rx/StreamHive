@@ -1,3 +1,5 @@
+# esc4n0rx/streamhive/StreamHive-c42f1d9ebdab96cebae0483324932de84199e1af/proxy_server.py
+
 """
 Streamhive Proxy Server
 Servidor proxy para evitar mixed content com URLs HTTP
@@ -20,6 +22,61 @@ class ProxyServer:
         self.session.headers.update({
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         })
+
+    def proxy_request(self, url: str) -> Optional[Response]:
+        """
+        Faz proxy de uma URL genérica, removendo cabeçalhos de segurança.
+        
+        Args:
+            url: URL original para fazer proxy
+            
+        Returns:
+            Response: Response do Flask ou None se erro
+        """
+        try:
+            # Validar URL
+            parsed_url = urlparse(url)
+            if not parsed_url.scheme or not parsed_url.netloc:
+                self.logger.error(f"URL inválida para proxy: {url}")
+                return None
+            
+            # Fazer requisição com streaming
+            response = self.session.get(url, stream=True, timeout=30, allow_redirects=True)
+            
+            if not response.ok:
+                self.logger.error(f"Erro na requisição proxy para {url}: {response.status_code}")
+                return None
+            
+            # Headers a serem removidos
+            headers_to_remove = [
+                'X-Frame-Options',
+                'Content-Security-Policy',
+                'Cross-Origin-Embedder-Policy'
+            ]
+            
+            # Copiar e limpar cabeçalhos
+            headers = dict(response.headers)
+            for header in headers_to_remove:
+                if header in headers:
+                    del headers[header]
+            
+            # Garantir streaming
+            def generate():
+                try:
+                    for chunk in response.iter_content(chunk_size=8192):
+                        if chunk:
+                            yield chunk
+                except Exception as e:
+                    self.logger.error(f"Erro no streaming do proxy: {e}")
+            
+            return Response(generate(), status=response.status_code, headers=headers)
+            
+        except requests.exceptions.RequestException as e:
+            self.logger.error(f"Erro na requisição do proxy: {e}")
+            return None
+        except Exception as e:
+            self.logger.error(f"Erro genérico no proxy: {e}")
+            return None
     
     def proxy_stream(self, url: str) -> Optional[Response]:
         """
